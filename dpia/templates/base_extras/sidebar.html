@@ -1,0 +1,181 @@
+{% load access_tags %}
+
+<div class="col-md-3 left_col menu_fixed">
+  <div class="left_col scroll-view">
+
+    <div class="navbar nav_title menu_section">
+      <a href="{% url 'dashboard' %}" class="site_title text-center">
+        D<span>ata </span>P<span>rotection <br/></span>I<span>mpact </span>A<span>ssessment</span>
+      </a>
+    </div>
+    <div class="clearfix"></div>
+    <!-- <hr style="width:80%"/> -->
+    <!-- sidebar menu -->
+    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+      <div class="menu_section">
+        <ul class="nav side-menu">
+          <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a></li>
+
+          {% if request.resolver_match.view_name == "profile" or request.resolver_match.view_name == "profile_edit" or request.resolver_match.view_name == "password_change" %}
+            <li><a><i class="fa fa-user-circle fa-fw"></i> Profile Information</a>
+              <ul class="nav child_menu">
+                <li><a href="{% url 'profile' %}">Profile</a></li>
+                <li><a href="{% url 'profile_edit' %}">Update profile</a></li>
+                <li><a href="{% url 'password_change' %}">Change password</a></li>
+              </ul>
+            </li>
+
+          {% elif request.resolver_match.view_name == "pre_assessment" %}
+            <li><a href="{% url 'pre_assessment' %}"><i class="fa fa-save fa-fw"></i> Pre-Assessment</a></li>
+
+          {% elif request.resolver_match.view_name == "pre_assessment_confirmation" %}
+            <li><a href="{% url 'pre_assessment' %}"><i class="fa fa-save fa-fw"></i> Pre-Assessment</a></li>
+            <li><a href="{% url 'pre_assessment_confirmation' %}"><i class="fa fa-check-circle fa-fw"></i> Confirm Pre-Assessment</a></li>
+
+          {% elif request.resolver_match.view_name == "dashboard" or request.resolver_match.view_name == "deleted_questionnaires" %}
+            <li><a href="{% url 'deleted_questionnaires' %}"><i class="fa fa-trash-o fa-fw"></i> Deleted Qs</a></li>
+
+          {% elif request.resolver_match.view_name == "q_add" %}
+            <li><a href="{% url 'q_add' %}"> <i class="fa fa-save fa-fw"></i> New questionnaire</a></li>
+
+          {% elif q %}
+            {% is_authorized q.id request.user as authorized %}
+            {% if authorized %}
+              <li><a href="{% url 'history' q.id  %}"><i class="fa fa-history fa-fw"></i> History</a></li>
+            {% endif %}
+            <div class="m-b-10 mt-10">
+              <h3 class="m-b-10">Steps</h3>
+            </div>
+            <li><a><i class="fa fa-angle-down"></i>Questionnaire Details</a>
+              <ul class="nav child_menu">
+                <li>
+                  <a href="{% url 'pre_assessment_update' q.id %}">
+                    Pre-Assessment
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'members' q.id %}">
+                    Team Members
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'sources' q.id %}">
+                    Sources
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li><a><i class="fa fa-angle-down"></i>System Description</a>
+              <ul class="nav child_menu">
+                <li>
+                  <a href="{% url 'primary_list' q.id %}">
+                    Primary and Supporting Assets
+                  </a>
+                  {% comment %}
+                    <ul class="nav child_menu">
+                      <li class="sub_menu"><a href="{% url 'usecases' q.id %}"><span class="small">Use Cases</span></a>
+                        <ul class="nav child_menu">
+                          {% for u in q.usecase.all %}
+                            <li class="sub_menu"><a href="{% url 'usecase_details' id=u.id %}"><span class="small">{{ u.name }}</span></a></li>
+                          {% endfor %}
+                        </ul>
+                      </li>
+                    </ul>
+                  {% endcomment %}
+                </li>
+              </ul>
+            </li>
+            <li><a><i class="fa fa-angle-down"></i>Risk Assessment</a>
+              <ul class="nav child_menu">
+                <li>
+                  <a href="{% url 'threat_identification' q.id %}">
+                    Threat Identification
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'threat_assessment' q.id %}">
+                    Likelihood Assessment
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'risk_assessment' q.id %}">
+                    Impact Assessment
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li><a><i class="fa fa-angle-down"></i>Risk Treatment</a>
+              <ul class="nav child_menu">
+                <li>
+                  <a href="{% url 'threat_controls' q.id %}">
+                    Controls Implementation
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'risk_mitigation' q.id %}">
+                    Risk Mitigation
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li><a><i class="fa fa-angle-down"></i>Privacy Targets</a>
+              <ul class="nav child_menu">
+                <li>
+                  <a href="{% url 'privacy_target_identification' q.id %}">
+                    Privacy Targets
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'privacy_threat_identification' q.id %}">
+                    Privacy Threats
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'privacy_control_implementation' q.id %}">
+                    Privacy Controls
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a href="{% url 'finalize_assessment' q.id %}" class="loading_button" data-loading-text="<i class='fa fa-spinner fa-pulse fa-fw'></i> Loading..."><i class="fa fa-file-o"></i>Report</a>
+            </li>
+            <!-- <li>
+              <a href="{% url 'finalize_assessment' q.id %}" class="loading_button" data-loading-text="Loading..."><i class="fa fa-file-o"></i>Report</a> -->
+              <!-- <a><i class="fa fa-angle-down"></i>Report</a>
+              <ul class="nav child_menu">
+                <li><a href="{% url 'finalize_assessment' q.id %}" class="loading_button" data-loading-text="Loading...">Preview</a></li>
+                <li><a href="{% url 'pdf_reportlab' q_id=q.id %}" title="Download PDF" target="_blank">PDF</a></li>
+                <li><a href="{% url 'generate_docx' q_id=q.id %}" title="Download DOCX" target="_blank">DOCX</a></li>
+              </ul> -->
+            <!-- </li> -->
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+    <!-- /sidebar menu -->
+
+
+    <!-- /menu footer buttons -->
+    <div class="sidebar-footer hidden-small">
+      {% if q %}
+        {% include 'base_extras/status.html' %}
+      {% endif %}
+      <!-- <a href="{% url 'dashboard' %}" data-toggle="tooltip" data-placement="top" title="Dashboard">
+        <span class="fa fa-dashboard fa-fw" aria-hidden="true"></span>
+      </a>
+      <a href="{% url 'profile' %}" data-toggle="tooltip" data-placement="top" title="Profile">
+        <span class="fa fa-user" aria-hidden="true"></span>
+      </a>
+      <a data-toggle="tooltip" data-placement="top" title="Austrian Institute of Technology">
+        <span class="fa fa-copyright" aria-hidden="true"></span>
+      </a>
+      <a href="{% url 'logout' %}" data-toggle="tooltip" data-placement="top" title="Logout">
+        <span class="fa fa-sign-out" aria-hidden="true"></span>
+      </a> -->
+    </div>
+    <!-- /menu footer buttons -->
+
+  </div>
+</div>
+<!-- /end sidebar -->

@@ -1,0 +1,54 @@
+<form class="js-add-form" method="post" action="{% url 'member_add' q.id %}">{% csrf_token %}
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="modal-title">Add Members</h4>
+  </div>
+  <div class="modal-body">
+    <table class="table table-condensed">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Expertise</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in user_list %}
+          <tr>
+            <td>
+              <label class="no_bold" for="{{ user.id }}">{{ user.get_full_name }}</label>
+            </td>
+            <td>
+              <label class="no_bold" for="{{ user.id }}">{{ user.user_profile.expertise }}</label>
+            </td>
+            <td>
+              <div>
+                <input id="{{ user.id }}" class="myCheckBox" type="checkbox" name="user" value="{{ user.id }}"/>
+              </div>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="3" class="text-muted bg-warning">
+              0 Users
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    {% if user_list %}
+      <button id="confirmButton" type="submit" class="btn btn-primary">Add</button>
+    {% endif %}
+  </div>
+</form>
+
+{% load staticfiles %}
+<script>
+  var url2 = "{% static 'js/highlight_row.js' %}";
+  $.getScript(url2);
+</script>

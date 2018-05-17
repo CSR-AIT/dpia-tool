@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+
+{% block title %}<title> New questionnaire | Data Protection Impact Assessment </title> {% endblock %}
+{% block panel_title %}Create new questionnaire{% endblock %}
+
+{% block content %}
+  <div class="form-group col-md-5 col-sm-12 col-xs-12">
+    {{ q_form|crispy }}
+    <button type="submit" class="btn btn-primary btn-block m-t-20 pull-right">Create Questionnaire</button>
+  </div>
+{% endblock %}

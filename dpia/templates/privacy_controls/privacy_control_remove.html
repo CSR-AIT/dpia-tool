@@ -1,0 +1,17 @@
+<form class="js-delete-form" method="post" action="{% url 'delete_selected_privacy_control' q_id=q.id threat_control_id=threat_control.id %}">{% csrf_token %}
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="modal-title">Remove Privacy Control</h4>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      Are you sure you want to remove <strong>{{threat_control.privacy_control}}</strong> from your list of privacy controls?
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <button type="submit" class="btn btn-danger">Remove</button>
+  </div>
+</form>

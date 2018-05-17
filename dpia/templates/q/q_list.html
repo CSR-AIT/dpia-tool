@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}<title> Data Protection Impact Assessment </title> {% endblock %}
+
+{% block panel_title %}Questionnaires{% endblock %}
+
+{% block side_panel %}
+  <div class="nav navbar-right panel_toolbox">
+    <!-- {% if deleted_questionnaires %}
+      <a href="{% url 'deleted_questionnaires' %}" class="btn btn-default m-r-5"><i class="fa fa-trash-o fa-fw"></i> Deleted Qs</a>
+    {% endif %} -->
+    <a href="{% url 'pre_assessment' %}" class="btn btn-default"><i class="fa fa-plus fa-fw"></i> New Questionnaire</a>
+  </div>
+{% endblock %}
+
+{% block p_text %}
+  <p class="font-13 m-b-30">
+    The purpose of the DPIA is to provide guidance on how to perform a Data Protection Impact Assessment (DPIA) to Smart Grid and Smart Metering systems.
+    The DPIA will contribute to organisations that initiate or already manage smart grid deployments as well as those introducing changes to existing smart grid architecture platforms in identifying and assessing the privacy risks of these initiatives.
+  </p>
+{% endblock %}
+
+{% block content %}
+  <table id="q_table" class="table">
+    <thead>
+      <tr>
+        <th>Description</th>
+        <!-- <th>Status</th> -->
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% include 'q/q_partial_list.html' %}
+    </tbody>
+  </table>
+{% endblock %}

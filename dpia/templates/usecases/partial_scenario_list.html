@@ -1,0 +1,60 @@
+{% load widget_tweaks %}
+
+{{ process_formset.management_form }}
+{% for form in process_formset.forms %}
+  {% for hidden in form.hidden_fields %}
+    {{ hidden }}
+  {% endfor %}
+  <tr id="{{ form.prefix }}-row" class="dynamic-form">
+    <td width="2%">
+      {% if form.instance.id %}
+        {{ forloop.counter }}
+      {% endif %}
+    </td>
+    <td class="form-group {% if form.description.errors %}has-error{%endif%}">
+      {{ form.description }}
+      {% for error in form.description.errors %}
+        <span class="help-block">{{ error }}</span>
+      {% endfor %}
+    </td>
+    <td width="20%" class="form-group {% if form.information_producer.errors %}has-error{%endif%}">
+      {{ form.information_producer|add_class:"form-control"|attr:"class:actors" }}
+      {% for error in form.information_producer.errors %}
+        <span class="help-block">{{ error }}</span>
+      {% endfor %}
+    </td>
+    <td width="20%" class="form-group {% if form.information_receiver.errors %}has-error{%endif%}">
+      {{ form.information_receiver|add_class:"form-control"|attr:"class:actors" }}
+      {% for error in form.information_receiver.errors %}
+        <span class="help-block">{{ error }}</span>
+      {% endfor %}
+    </td>
+    <td width="20%" class="form-group {% if form.information_exchanged.errors %}has-error{%endif%}">
+      {{ form.information_exchanged|add_class:"form-control"|attr:"class:primaries" }}
+      {% for error in form.information_exchanged.errors %}
+        <span class="help-block">{{ error }}</span>
+      {% endfor %}
+    </td>
+    {% if form.instance.id %}
+      <td width="5%">
+        <!-- {{ form.DELETE }} -->
+        <a href="#" class="btn btn-danger btn-xs js-remove-process" data-form="{% url 'process_delete' id=form.instance.id %}" title="Remove process"><i class="fa fa-trash-o fa-fw"></i></a>
+      </td>
+      <!-- {% if form.instance.information_exchanged %}
+        <td width="5%">
+          <div class="dropdown pull-right">
+            <button class="button_link dropdown-toggle" type="button" data-toggle="dropdown">
+              <span class="fa fa-chevron-down"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a class="js-edit-primary" href="#" data-url="{% url 'primary_process_edit' primary_id=form.instance.information_exchanged.id u_id=u.id %}" title='Edit "{{ form.instance.information_exchanged }}"'>Edit "{{ form.instance.information_exchanged }}"</a></li>
+            </ul>
+          </div>
+        </td>
+      {% endif %} -->
+    {% endif %}
+    <td width="2%" {% if forloop.last or not forloop.last %}class="hidden" {% endif %}>
+      <a id="remove-{{ form.prefix }}-row" href="javascript:void(0)" class="delete-row" title="Remove row"><small>Remove</small></a>
+    </td>
+  </tr>
+{% endfor %}

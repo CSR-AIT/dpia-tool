@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}
+  <title> Privacy Controls Implementation | Data Protection Impact Assessment </title>
+{% endblock %}
+
+{% block panel_title %}Privacy Controls Implementation{% endblock %}
+
+{% block p_text %}
+{% endblock %}
+
+{% block content %}
+  <table id="q_table" class="table table-condensed">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Privacy Target</th>
+        <th>Privacy Threats and Controls</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% include 'privacy_controls/partial_privacy_controls_list.html' %}
+    </tbody>
+  </table>
+{% endblock %}
+
+{% block paginator_buttons %}
+  <div class="paginator_panel">
+    <a href="{% url 'privacy_threat_identification' q_id=q.id %}"  class="pull-left btn btn-default"><i class="fa fa-chevron-left fa-fw"></i> Previous</a>
+    <a href="{% url 'finalize_assessment' q_id=q.id %}" class="btn btn-success pull-right loading_button" data-loading-text="<i class='fa fa-spinner fa-pulse fa-fw'></i> Finalizing...">Finalize assessment <i class="fa fa-chevron-right fa-fw"></i></a>
+  </div>
+{% endblock %}

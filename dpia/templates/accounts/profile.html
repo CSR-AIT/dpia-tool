@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}<title> Profile | Data Protection Impact Assessment </title>{% endblock %}
+
+{% block panel_title %}Profile Information{% endblock %}
+
+{% block side_panel %}
+  <ul class="nav navbar-right panel_toolbox">
+    <div class="dropdown pull-right">
+      <div class="btn-group btn-group-xs" role="group">
+        <a class="btn btn-default" href="{% url 'profile_edit' %}">Update profile</a>
+        <a class="btn btn-default" href="{% url 'password_change' %}">Change password</a>
+      </div>
+    </div>
+  </ul>
+{% endblock %}
+
+{% block content %}
+  <table class="table">
+    <tbody>
+      <tr>
+        <td style="border:0;">
+          <strong>First name:</strong>
+        </td>
+        <td style="border:0;">
+          {{ user.first_name }}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Last name:</strong>
+        </td>
+        <td>
+          {{ user.last_name }}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Username:</strong>
+        </td>
+        <td>
+          {{ user.username }}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Email:</strong>
+        </td>
+        <td>
+          {{ user.email }}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Expertise:</strong>
+        </td>
+        <td>
+          {{ user.profile.expertise }}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Date joined:</strong>
+        </td>
+        <td>
+          {{ user.date_joined }}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Last login:</strong>
+        </td>
+        <td>
+          {{ user.last_login }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% load filename %}
+{% load staticfiles %}
+
+{% for source in sources %}
+  <tr>
+    <td>{{ forloop.counter }}</td>
+    <td>{{ source.name }}</td>
+    <td>{{ source.description }}</td>
+    <td>{{ source.source_type }}</td>
+    <td>{{ source.purpose }}</td>
+    {% check_file source.source_file|filename as not_empty %}
+    {% if not_empty %}
+      <td width="20%">
+        <a href="{% url 'download_source_file' source.id %}" title="Download File">{{ source.source_file|filename }}</a>
+        <!-- <a href="{% url 'delete_source_file' source.questionaire.id source.id %}"><i class="fa fa-trash fa-fw"></i></a> -->
+      </td>
+    {% else %}
+      <td width="10%" class="text-muted"><i class="fa fa-file-o fa-fw"></i> No file</td>
+    {% endif %}
+    <td width="15%">
+      <a class="js-edit-source btn btn-primary btn-xs" href="#" data-url="{% url 'edit_source' source.id %}"><i class="fa fa-pencil fa-fw"></i></a>
+      <a class="js-delete-source btn btn-danger btn-xs" href="#" data-url="{% url 'delete_source' source.id %}"><i class="fa fa-trash fa-fw"></i></a>
+    </td>
+  </tr>
+{% empty %}
+  <tr>
+    <td colspan="7" class="text-muted bg-warning">
+      0 Sources
+    </td>
+  </tr>
+{% endfor %}
+
+
+<!-- {% block js %}
+  <script type="text/javascript" src="{% static "js/sources.js" %}"></script>
+{% endblock %} -->

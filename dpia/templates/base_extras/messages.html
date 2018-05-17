@@ -1,0 +1,53 @@
+<!-- Messages -->
+{% if messages %}
+    <script>
+      (function($) {
+        $(document).ready(function(){
+          $.jGrowl.defaults.closer = false;
+
+          {% for message in messages %}
+            if("{{ message.tags }}" == "success") {
+              $.jGrowl("{{ message }}", {
+                position: 'top-right',
+                sticky: false,
+                openDuration: 'fast',
+                // header: '<i class=fa fa-fw>&#xf058;</i> Success',
+                theme: 'success',
+                // openDuration: 'fast',
+                // closeDuration: 'fast',
+                // closeTemplate: 'x',
+              });
+            }
+            else if ("{{ message.tags }}" == "warning"){
+              $.jGrowl("{{ message }}", {
+                position: 'top-right',
+                sticky: true,
+                openDuration: 'fast',
+                // header: '<i class=fa fa-fw>&#xf071;</i> Warning',
+                theme: 'warning',
+              });
+            }
+            else if ("{{ message.tags }}" == "danger"){
+              $.jGrowl("{{ message }}", {
+                position: 'top-right',
+                sticky: true,
+                openDuration: 'fast',
+                // header: '<i class=fa fa-fw>&#xf06a;</i> Error',
+                theme: 'danger',
+              });
+            }
+            else if ("{{ message.tags }}" == "info"){
+              $.jGrowl("{{ message }}", {
+                position: 'top-right',
+                sticky: true,
+                openDuration: 'fast',
+                // header: '<i class=fa fa-fw>&#xf12a;</i> Info',
+                theme: 'info',
+              });
+            }
+          {% endfor %}
+        });
+      })(jQuery);
+    </script>
+  {% endif %}
+  <!-- /messages -->

@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}<title>Controls Implementation | Data Protection Impact Assessment </title> {% endblock %}
+
+{% block panel_title %}Controls Implementation{% endblock %}
+
+{% block p_text %}
+{% endblock %}
+
+{% block content %}
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Affected Supporting Asset</th>
+        <th>Threat</th>
+        <th>
+          <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="left" data-html="true" title="Level of vulnerability" data-content="
+          <b>Negligible</b>: Carrying out a threat by exploiting the properties of supporting assets does not appear possible.
+          <br/>
+          <b>Limited</b>: Carrying out a threat by exploiting the properties of supporting assets appears to be difficult.
+          <br/>
+          <b>Significant</b>: Carrying out a threat by exploiting the properties of supporting assets appears to be possible.
+          <br/>
+          <b>Maximum</b>: Carrying out a threat by exploiting the properties of supporting assets appears to be extremely easy.">
+          Level of vulnerability
+          <i class="fa fa-info-circle"></i></a>
+        </th>
+        <th>
+          <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="left" data-html="true" title="Risk source capability" data-content="
+          <b>Negligible</b>: Risk sources do not appear to have any special capabilities to carry out a threat.
+          <br/>
+          <b>Limited</b>: The capabilities of risks sources to carry out a threat are limited.
+          <br/>
+          <b>Significant</b>: The capabilities of risk sources to carry out a threat are real and significant.
+          <br/>
+          <b>Maximum</b>: The capabilities of risk sources to carry out a threat are definite and unlimited.">
+          Risk source capability
+          <i class="fa fa-info-circle"></i></a>
+        </th>
+        <th>
+          <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="left" data-html="true" title="Likelihood" data-content="
+          <b>Likelihood</b> = Level of vulnerability of the supporting asset + Capability of the risk source for the exploitation of this vulnerability.">
+          Likelihood
+          <i class="fa fa-info-circle"></i></a>
+        </th>
+        <th>Controls</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{ threat_formset.management_form }}
+      {% for threat_sa_rel_form in threat_formset.forms %}
+        {% for hidden in threat_sa_rel_form.hidden_fields %}
+          {{ hidden }}
+        {% endfor %}
+        <tr>
+          <td>
+            {{ forloop.counter }}
+          </td>
+          <td width="12%">
+            {{ threat_sa_rel_form.instance.affected_supporting_asset }}
+          </td>
+          <td width="10%">
+            {{ threat_sa_rel_form.instance.threat }}
+          </td>
+          <td width="10%">
+            {% with lov=threat_sa_rel_form.instance.level_of_vulnerability %}
+              {% if lov == 1 %}
+                <span class="label label-negligible">Negligible</span>
+              {% elif lov == 2 %}
+                <span class="label label-limited">Limited</span>
+              {% elif lov == 3 %}
+                <span class="label label-significant">Significant</span>
+              {% elif lov == 4 %}
+                <span class="label label-danger">Maximum</span>
+              {% else %}
+                None
+              {% endif %}
+            {% endwith %}
+          </td>
+          <td width="10%">
+            {% with rsc=threat_sa_rel_form.instance.risk_source_capability %}
+              {% if rsc == 1 %}
+                <span class="label label-negligible">Negligible</span>
+              {% elif rsc == 2 %}
+                <span class="label label-limited">Limited</span>
+              {% elif rsc == 3 %}
+                <span class="label label-significant">Significant</span>
+              {% elif rsc == 4 %}
+                <span class="label label-danger">Maximum</span>
+              {% else %}
+                None
+              {% endif %}
+            {% endwith %}
+          </td>
+          <!-- <td width="10%">
+            {% with likelihood=threat_sa_rel_form.instance.level_of_vulnerability|add:threat_sa_rel_form.instance.risk_source_capability %}
+              {% if likelihood < 5 %}
+                <span class="label label-negligible">Negligible</span>
+              {% elif likelihood == 5 %}
+                <span class="label label-limited">Limited</span>
+              {% elif likelihood == 6 %}
+                <span class="label label-significant">Significant</span>
+              {% elif likelihood > 6 and likelihood <= 10 %}
+                <span class="label label-danger">Maximum</span>
+              {% else %}
+
+              {% endif %}
+            {% endwith %}
+          </td> -->
+          <td width="10%">
+            {% with likelihood=threat_sa_rel_form.instance.likelihood %}
+              {% if likelihood < 5 and likelihood > 0 %}
+                <span class="label label-negligible">Negligible</span>
+              {% elif likelihood == 5 %}
+                <span class="label label-limited">Limited</span>
+              {% elif likelihood == 6 %}
+                <span class="label label-significant">Significant</span>
+              {% elif likelihood > 6 and likelihood <= 10 %}
+                <span class="label label-danger">Maximum</span>
+              {% else %}
+                <span class="label label-default">Not calculated</span>
+              {% endif %}
+            {% endwith %}
+          </td>
+          <td class="form-group {% if threat_sa_rel_form.control.errors %}has-error{%endif%}">
+            {{ threat_sa_rel_form.control }}
+            {% if threat_sa_rel_form.control.errors %}
+              <span class="help-block">{{ threat_sa_rel_form.control.errors|striptags }}</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="7" class="text-muted bg-warning">
+            <i class="fa fa-chevron-left fa-fw"></i> Go back and add Threats.
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+{% block paginator_buttons %}
+  <div class="paginator_panel">
+    <a href="{% url 'risk_assessment' q_id=q.id %}" class="pull-left btn btn-default"><i class="fa fa-chevron-left fa-fw"></i> Previous</a>
+    <button type="submit" class="btn btn-primary btn-md pull-right loading_button" data-loading-text="<i class='fa fa-spinner fa-pulse fa-fw'></i> Saving...">Save and continue <i class="fa fa-chevron-right fa-fw"></i></button>
+  </div>
+{% endblock %}

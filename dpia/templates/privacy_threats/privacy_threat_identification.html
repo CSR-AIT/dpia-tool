@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}
+  <title> Privacy Threats Identification | Data Protection Impact Assessment </title>
+{% endblock %}
+
+{% block panel_title %}Privacy Threats Identification{% endblock %}
+
+{% block p_text %}
+{% endblock %}
+
+{% block content %}
+  <table id="q_table" class="table table-condensed">
+    <thead>
+      <tr>
+        <!-- <th>#</th> -->
+        <th>Privacy Target</th>
+        <th>Privacy Threats and Affected Primary Assets</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% include 'privacy_threats/partial_privacy_threats_list.html' %}
+    </tbody>
+  </table>
+{% endblock %}
+
+{% block paginator_buttons %}
+  <div class="paginator_panel">
+    <a href="{% url 'privacy_target_identification' q_id=q.id %}" class="btn btn-default pull-left"><i class="fa fa-chevron-left fa-fw"></i> Previous</a>
+    <a href="{% url 'privacy_control_implementation' q_id=q.id %}" class="btn btn-primary pull-right">Next <i class="fa fa-chevron-right fa-fw"></i></a>
+  </div>
+{% endblock %}

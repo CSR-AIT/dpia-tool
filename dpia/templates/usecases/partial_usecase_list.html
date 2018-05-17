@@ -1,0 +1,30 @@
+{% for usecase in saved_usecases %}
+  <tr>
+    <td>{{forloop.counter}}</td>
+    <td>
+      <a title='Scenario of "{{usecase.name}}"' href="{% url 'usecase_details' id=usecase.id %}">
+        {{usecase.name}}
+      </a>
+    </td>
+    <td>{{usecase.domain}}</td>
+    <td>{{usecase.description}}</td>
+    <td>{{usecase.business_goal}}</td>
+    <td>
+      <div class="dropdown pull-right">
+        <button class="button_link dropdown-toggle" type="button" data-toggle="dropdown">
+          <span class="fa fa-chevron-down"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          <li><a class="js-edit" href="#" data-url="{% url 'edit_usecase' id=usecase.id %}" title='Edit "{{ usecase }}"'>Edit</a></li>
+          <li><a class="js-delete" href="#" data-url="{% url 'delete_usecase' id=usecase.id %}" title='Edit "{{ usecase }}"'>Delete</a></li>
+        </ul>
+      </div>
+    </td>
+  </tr>
+{% empty %}
+  <tr>
+    <td colspan="6" class="text-muted text-center bg-warning">
+      0 Use Cases
+    </td>
+  </tr>
+{% endfor %}

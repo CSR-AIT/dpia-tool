@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block title %}<title> Pre-Assessment Confirmation | Data Protection Impact Assessment </title> {% endblock %}
+
+{% block panel_title %}Confirm Pre-Assessment{% endblock %}
+
+{% block content %}
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>Question</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for answer in answers %}
+        <tr>
+          <td>
+            {{ answer.question }}
+          </td>
+          <td width="10%">
+            {% if answer.get_answer_display == 'Yes' %}
+              <span style="color:green;">
+                <i class="fa fa-check-circle fa-fw"></i> Yes
+              </span>
+            {% else %}
+              <span style="color:grey;">
+                <i class="fa fa-close fa-fw"></i> No
+              </span>
+            {% endif %}
+
+            <!-- {{ answer.get_answer_display }} -->
+            <!-- {{ answer.answer|yesno:"Yes,No" }} -->
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+{% block paginator_buttons %}
+  <div class="paginator_panel">
+    <a href="{% url 'pre_assessment' %}" class="btn btn-default pull-left"><i class="fa fa-chevron-left fa-fw"></i> Back to pre-assessment</a>
+    <!-- <button type="submit" name="no" class="btn btn-default pull-left"><i class="fa fa-chevron-left fa-fw"></i> Delete and go back to dashboard</button> -->
+    <button type="submit" name="yes" class="btn btn-primary pull-right" data-loading-text="<i class='fa fa-spinner fa-pulse fa-fw'></i> Confirming...">Confirm and continue <i class="fa fa-chevron-right fa-fw"></i></button>
+  </div>
+{% endblock %}

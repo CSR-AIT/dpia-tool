@@ -1,0 +1,78 @@
+{% load humanize %}
+{% load history %}
+
+<!-- top navigation -->
+<div class="top_nav">
+  <div class="nav_menu">
+    <nav>
+      <div class="nav toggle">
+        <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+      </div>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="">
+          <a href="" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+            <i class="fa fa-user-circle fa-fw"></i>
+            {{ request.user.username }}<span class=" fa fa-caret-down fa-fw"></span>
+          </a>
+          <ul class="dropdown-menu dropdown-usermenu pull-right">
+            <li><a href="{% url 'profile' %}"> Profile</a></li>
+            <li><a href="{% url 'logout' %}" name="logout"><i class="fa fa-sign-out pull-right"></i> Sign Out</a></li>
+          </ul>
+        </li>
+        {% if q %}
+          <!-- {% if allow_q_owner %}
+            <li>
+              <a href="{% url 'history' q_id=q.id %}">
+                <i class="fa fa-history"></i> History
+              </a>
+            </li>
+          {% endif %} -->
+          <!-- Globally accessible recent actions -->
+          <!-- <li role="presentation" class="dropdown">
+            <a href="" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
+              Recent Actions<span class=" fa fa-caret-down fa-fw"></span>
+            </a>
+            <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
+              {% for version in versions_tag %}
+                <li>
+                  <a title="{{ version.revision.comment|naturaltime }}">
+                    <span>
+                      <span>{{ version.revision.user }}</span>
+                      <span class="time">{{ version.revision.date_created|naturaltime }}</span>
+                    </span>
+                    <span class="message">
+                      {{ version.revision.comment|truncatewords:6 }}
+                    </span>
+                  </a>
+                  {% if allow_q_owner %}
+                    <form action="{% url 'revert_version' q_id=q.id revision_id=version.revision.id %}" method="post">{% csrf_token %}
+                      <input type="hidden" name="next" value="{{ request.path|urlencode }}" />
+                      <button type="submit" name="revert_button" class="button_link small m-l-5 loading_button" data-loading-text="<i class='fa fa-spinner fa-pulse fa-fw'></i> Reverting..." title="Revert to this version of the questionnaire."><u>Revert</u></button>
+                    </form>
+                  {% endif %}
+                </li>
+
+              {% empty %}
+                <li class="text-center text-muted">
+                  No actions yet
+                </li>
+              {% endfor %}
+
+              {% if allow_q_owner %}
+                <li>
+                  <div class="text-center">
+                    <a href="{% url 'history' q_id=q.id %}">
+                      <strong>See Complete History</strong>
+                      <i class="fa fa-angle-right"></i>
+                    </a>
+                  </div>
+                </li>
+              {% endif %}
+            </ul>
+          </li> -->
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+</div>
+<!-- /top navigation -->

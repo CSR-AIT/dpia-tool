@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block title %}<title> Update Pre-Assessment | Data Protection Impact Assessment </title> {% endblock %}
+
+{% block panel_title %}Update Pre-Assessment{% endblock %}
+
+{% block content %}
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>Question</th>
+        <!-- <th>Answer</th> -->
+      </tr>
+    </thead>
+    <tbody>
+      {{ answer_formset.management_form }}
+      {% for form in answer_formset.forms %}
+        {% for hidden in form.hidden_fields %}
+          {{ hidden }}
+        {% endfor %}
+        <tr>
+          <td>
+            {{ form.answer.label }}
+          </td>
+          <td width="20%">
+            {{ form.answer|attr:"required"}}
+            {% if form.answer.errors %}
+              <p class="bootstrap_danger">{{ form.answer.errors|striptags }}</p>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+{% endblock %}
+
+{% block paginator_buttons %}
+  <div class="paginator_panel">
+    <a href="{% url 'dashboard' %}" class="pull-left btn btn-default"><i class="fa fa-chevron-left fa-fw"></i> Dashboard</a>
+    <button type="submit" class="btn btn-primary pull-right">Save and continue</button>
+  </div>
+{% endblock %}

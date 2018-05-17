@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% load staticfiles %}
+
+{% block title %}<title> Pre-Assessment | Data Protection Impact Assessment </title> {% endblock %}
+
+{% block panel_title %}Pre-Assessment{% endblock %}
+
+{% block p_text %}
+  <p class="font-13 m-b-30">
+    The objective of the Pre-Assessment is to provide guidance to the system owner of a smart grid system to
+    determine if a DPIA is necessary or not. It is therefore proposed to the
+    system owner to perform an initial analysis of the application under consideration and to decide whether
+    to proceed with the next steps of the DPIA or to stop the process.
+  </p>
+{% endblock %}
+
+{% block content %}
+  <table class="table table-condensed table-hover">
+    <thead>
+      <tr>
+        <th>Question</th>
+        <!-- <th>Answer</th> -->
+      </tr>
+    </thead>
+    <tbody>
+      {{ answer_formset.management_form }}
+      {% for form in answer_formset.forms %}
+        {% for hidden in form.hidden_fields %}
+          {{ hidden }}
+        {% endfor %}
+        <tr>
+          <td>
+            {{ form.answer.label }}
+          </td>
+          <td width="20%">
+            {{ form.answer|attr:"required"}}
+            {% if form.answer.errors %}
+              <p class="bootstrap_danger">{{ form.answer.errors|striptags }}</p>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+{% block paginator_buttons %}
+  <div class="paginator_panel">
+    <a href="{% url 'dashboard' %}" class="pull-left btn btn-default"><i class="fa fa-chevron-left fa-fw"></i> Dashboard</a>
+    <button type="submit" class="btn btn-primary pull-right">Save and continue <i class="fa fa-chevron-right fa-fw"></i></button>
+  </div>
+{% endblock %}

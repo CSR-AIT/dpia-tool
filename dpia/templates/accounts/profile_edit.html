@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+{% block title %}<title> Update Profile | Data Protection Impact Assessment </title>{% endblock %}
+
+{% block panel_title %}Update Profile{% endblock %}
+
+{% block side_panel %}
+  <ul class="nav navbar-right panel_toolbox">
+    <div class="dropdown pull-right">
+      <a class="btn btn-default btn-xs" href="{% url 'password_change' %}">Change password</a>
+    </div>
+  </ul>
+{% endblock %}
+
+{% block content %}
+  <div class="col-md-5 col-sm-12 col-xs-12">
+    <form role="form" method="post" action="">{% csrf_token %}
+      {{ user_form|crispy }}
+      {{ profile_form|crispy }}
+      <br/>
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary btn-block">Save changes</button>
+      </div>
+    </form>
+  </div>
+{% endblock %}

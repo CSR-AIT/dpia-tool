@@ -1,0 +1,21 @@
+
+{% for membership in user_memberships %}
+  <tr>
+    <td>
+      <a title="Assess {{ membership.questionaire }}" href="{% url 'members' membership.questionaire.id %}">{{ membership.questionaire.description }}</a>
+    </td>
+    <td width="20%">
+      <!-- <a class="btn btn-xs btn-success" title="Assess {{ membership.questionaire }}" href="{% url 'members' membership.questionaire.id %}">View questionnaire</a> -->
+      {% if membership.is_owner %}
+        <a class="btn btn-primary btn-xs js-edit" href="javascript:void(0)" data-url="{% url 'q_edit' membership.questionaire.id %}" title='Edit "{{ membership.questionaire }}"'><i class="fa fa-pencil fa-fw"></i></a>
+        <a class="btn btn-danger btn-xs js-delete" href="javascript:void(0)" data-url="{% url 'q_delete' membership.questionaire.id %}" title='Delete "{{ membership.questionaire }}"'><i class="fa fa-trash fa-fw"></i></a>
+      {% endif %}
+    </td>
+  </tr>
+{% empty %}
+  <tr>
+    <td colspan="3" class="text-muted bg-warning">
+      You are not assigned to any DPIA questionnaire yet.
+    </td>
+  </tr>
+{% endfor %}

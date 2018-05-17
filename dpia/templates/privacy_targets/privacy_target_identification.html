@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}<title> Privacy Targets Identification | Data Protection Impact Assessment </title> {% endblock %}
+
+{% block panel_title %}Privacy Targets Identification{% endblock %}
+
+{% block p_text %}
+  <!-- <p class="text-muted small m-b-20">
+    <i class="fa fa-exclamation fa-fw"></i> Check/Uncheck boxes to add/remove privacy targets.
+  </p> -->
+{% endblock %}
+
+{% block content %}
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Generic PrivacyTargets -->
+      {% for privacy_target in generic_privacy_targets %}
+        <tr>
+          <td>
+            <input id="{{ privacy_target.id }}" class="myCheckBox" type="checkbox" name="privacy_target" value="{{ privacy_target.id }}"
+            {% for selected_privacy_q_rel in selected_privacy_targets %} {% if selected_privacy_q_rel.privacy_target == privacy_target %} checked {% endif %} {% endfor %}>
+          </td>
+          <td>
+            <label class="no_bold" for="{{ privacy_target.id }}">{{ privacy_target.name }}</label>
+          </td>
+          <td>
+            <label class="no_bold" for="{{ privacy_target.id }}">{{ privacy_target.description }}</label>
+          </td>
+        <tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+{% block paginator_buttons %}
+  <div class="paginator_panel">
+    <a href="{% url 'risk_mitigation' q_id=q.id %}" class="pull-left btn btn-default"> <i class="fa fa-chevron-left fa-fw"></i> Previous</a>
+    <button type="submit" name="_choose" class="btn btn-primary pull-right loading_button" data-loading-text="<i class='fa fa-spinner fa-pulse fa-fw'></i> Saving...">Save and continue <i class="fa fa-chevron-right fa-fw"></i></button>
+  </div>
+{% endblock %}

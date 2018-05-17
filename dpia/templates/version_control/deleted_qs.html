@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}<title> Delete Questionnaires | Data Protection Impact Assessment</title> {% endblock %}
+
+{% block panel_title %}Deleted questionnaires{% endblock %}
+
+{% block p_text %}
+  <p class="font-13 m-b-30">
+    Recover your deleted questionnaires.
+    <!-- Choose a date from the list below to recover a deleted version of a questionnaire. -->
+  </p>
+{% endblock %}
+
+{% block content %}
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>Questionnaire</th>
+        <th>Date of last revision</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for deleted_q in deleted_questionnaires %}
+        <tr>
+          <td>
+            {{ deleted_q }}
+          </td>
+          <td>
+            {{ deleted_q.revision.date_created|naturaltime }}
+          </td>
+          <td>
+            <a
+              href="{% url 'recover_questionnaire' q_id=deleted_q.id %}"
+              class="loading_button btn btn-default btn-xs"
+              title="Recover questionnaire"
+              data-loading-text="<i class='fa fa-spinner fa-pulse fa-fw'></i> Recovering...">
+              Recover
+            </a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="2" class="text-muted">
+            No questionnaires to recover.
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  {% block title %}
+    <title>Data Protection Impact Assessment</title>
+  {% endblock %}
+
+  {% load staticfiles %}
+  {% load crispy_forms_tags %}
+  {% load widget_tweaks %}
+  {% load humanize %}
+
+  <link rel="stylesheet" href="{% static 'bootstrap-3.3.7/css/bootstrap.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+  <link rel="stylesheet" href="{% static 'font-awesome-4.7.0/css/font-awesome.css' %}">
+  <link rel="stylesheet" href="{% static 'css/jquery.jgrowl.css' %}" />
+</head>
+
+
+  <body class="nav-md">
+    <div class="container body">
+      <div class="main_container">
+        {% include 'base_extras/sidebar.html' %}
+        {% include 'base_extras/navbar.html' %}
+        <!-- page content -->
+        <div class="right_col">
+          {% if q %}
+            <p class="h3 mt-10 text-center">
+              {{ q }}
+            </p>
+          {% endif %}
+          {% block generate_report %}{% endblock %}
+          <div class="row">
+            {% if not request.resolver_match.url_name == 'finalize_assessment' %}
+              <form action="" method="POST" novalidate> {% csrf_token %}
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                  <div class="x_panel">
+                    <div class="x_title">
+                      <h2>{% block panel_title %}{% endblock %}</h2>
+                      {% block side_panel %}{% endblock %}
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                      {% block p_text %}
+                      {% endblock %}
+
+                      {% block content %}
+                        <!-- content -->
+                      {% endblock %}
+                    </div>
+                  </div>
+
+                  {% block paginator_buttons %}
+                  {% endblock %}
+                </div>
+              </form>
+            {% endif %}
+
+            <!-- Preview Content Block -->
+            {% block content_preview %}
+            {% endblock %}
+
+            <!-- 1st Modal -->
+            <div class="modal fade" id="modal-q" data-backdrop="static" data-keyboard="false">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                </div>
+              </div>
+            </div>
+            <!-- Add/edit/delete Source Modal -->
+            <div class="modal fade" id="modal-source" data-backdrop="static" data-keyboard="false">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                </div>
+              </div>
+            </div>
+            <!-- Add Primary/Actor modal -->
+            <div class="modal fade" id="modal-primary">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                </div>
+              </div>
+            </div>
+            <!-- 2nd Modal -->
+            <div class="modal fade" id="addModal" data-backdrop="static" data-keyboard="false"></div>
+          </div>
+        </div>
+        <!-- /page content -->
+      </div> <!--/end main-container -->
+    </div> <!--/end container -->
+
+    {% include 'base_extras/javascript.html' %}
+    {% include 'base_extras/messages.html' %}
+
+  </body>
+
+</html>

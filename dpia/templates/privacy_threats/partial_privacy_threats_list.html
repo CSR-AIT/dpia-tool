@@ -1,0 +1,52 @@
+{% for privacy_q_rel in privacy_q_rels %}
+  <tr>
+    <td width="30%">
+      <a
+        href="javascript:void(0)"
+        data-url="{% url 'privacy_target_delete' q.id privacy_q_rel.id %}"
+        class="js-delete"
+        title='Remove "{{ privacy_q_rel.privacy_target }}"'>
+        <i class="fa fa-trash fa-fw"></i>
+      </a>
+      {{ privacy_q_rel.privacy_target }}
+    </td>
+    <td>
+      {% if privacy_q_rel.privacy_threats.all %}
+        {% for privacy_threat_rel in privacy_q_rel.pqrel_in_pthreatrel.all %}
+          <div class="panel panel-default">
+            <div class="panel-heading" title="{{ privacy_threat_rel.privacy_threat }}">
+              {{ privacy_threat_rel.privacy_threat|truncatewords:7 }}
+              <div class="dropdown pull-right">
+                <div class="btn-group btn-group-xs" role="group">
+                  <a class="js-edit btn btn-default btn-xs" href="javascript:void(0)" title='Assign primary assets to "{{ privacy_threat_rel.privacy_threat }}"' data-url="{% url 'assign_primaryasset_to_privacythreat' q_id=q.id privacy_threat_rel_id=privacy_threat_rel.id %}"><i class="fa fa-plus fa-fw"></i>
+                    Primary Assets
+                  </a>
+                  <a class="js-delete btn btn-default btn-xs" title='Remove "{{ privacy_threat_rel.privacy_threat }}"' href="javascript:void(0)" data-url="{% url 'privacy_threat_rel_delete' q_id=q.id privacy_threat_rel_id=privacy_threat_rel.id %}">
+                    <i class="fa fa-trash fa-fw"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="list-group">
+              {% for primary_asset in privacy_threat_rel.affected_primary_assets.all %}
+                <li class="list-group-item">
+                  {{ primary_asset }}
+                </li>
+              {% endfor %}
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
+    </td>
+    <td width="5%">
+      <a class="js-edit btn btn-default btn-sm" href="javascript:void(0)" data-url="{% url 'privacythreat_add' q_id=q.id privacy_q_rel_id=privacy_q_rel.id %}" title="Add threats to {{privacy_q_rel.privacy_target}}" ><i class="fa fa-plus fa-fw"></i> Threats
+      </a>
+    </td>
+  <tr>
+{% empty %}
+  <tr>
+    <td colspan="4" class="text-muted bg-warning">
+      <i class="fa fa-chevron-left fa-fw"></i> Go back and add Privacy Targets.
+    </td>
+  </tr>
+{% endfor %}

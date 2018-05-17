@@ -1,0 +1,29 @@
+{% extends 'accounts/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+  <title>Sign Up | Data Protection Impact Assessment</title>
+{% endblock %}
+
+{% block h2_title %}Sign Up{% endblock %}
+
+{% block auth_content %}
+  <form role="form" method="post" action="">{% csrf_token %}
+    <div class="form-group">
+      {{ user_form|crispy }}
+      {{ profile_form|crispy }}
+    </div>
+
+    <br/>
+
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary btn-block submit">Sign Up</button>
+      <br/>
+      <div class="separator">
+        <p class="center">Already a member?
+          <a href="{% url 'login' %}"><i class="fa fa-sign-in fa-fw"></i>Sign in</a>
+        </p>
+      </div>
+    </div>
+  </form>
+{% endblock %}

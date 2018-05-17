@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}<title> Primary Assets | Data Protection Impact Assessment</title> {% endblock %}
+
+{% block panel_title %}Primary and Supporting assets{% endblock %}
+
+{% block side_panel %}
+  <div class="nav navbar-right panel_toolbox">
+    <a class="js-add btn btn-default" href="javascript:void(0)" data-url="{% url 'primary_list_add' q.id %}" title="Add new primary asset"><i class="fa fa-plus fa-fw"></i> Primary asset</a>
+  </div>
+{% endblock %}
+
+{% block p_text %}
+  <p class="font-13 m-b-30">
+    The aim of the template in section 3.3 is to gather relevant and overall information regarding the processed data, the use case, the organisation, actors involved, the system owner, and the project.
+  </p>
+{% endblock %}
+
+{% block content %}
+  <table id="q_table" class="table table-condensed table-striped">
+    <thead>
+      <tr>
+        <th></th>
+        <th>#</th>
+        <th>Name</th>
+        <th>Reading Frequency</th>
+        <th>Retention Time</th>
+        <th>
+          <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="left" data-html="true" title="Level of Identification" data-content="
+          <b>Negligible</b>: Identifying an individual using their personal data appears to be virtually impossible.
+          <br/>
+          <b>Limited</b>: Identifying an individual using their personal data appears to be difficult but is possible in certain cases.
+          <br/>
+          <b>Significant</b>: Identifying an individual using their personal data appears to be relatively easy.
+          <br/>
+          <b>Maximum</b>: Identifying an individual using their personal data appears to be extremely easy.">
+          Level of Identification
+          <i class="fa fa-info-circle"></i></a>
+        </th>
+        <th>Supporting Assets</th>
+        <th>SA</th>
+        <th></th>
+        <th><span class="pull-right"></span></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% include 'primary_assets/partial_primary_list.html' %}
+    </tbody>
+  </table>
+{% endblock %}
+
+{% block paginator_buttons %}
+  <div class="paginator_panel">
+    <a href="{% url 'sources' q_id=q.id %}" class="pull-left btn btn-default"><span class="fa fa-chevron-left fa-fw"></span> Previous</a>
+    <!-- <a href="{% url 'threat_identification' q_id=q.id %}" class="pull-right btn btn-primary">Next <span class="fa fa-chevron-right fa-fw"></span></a> -->
+    <button type="submit" name="next_step" class="btn btn-primary pull-right m-r-5 loading_button" data-loading-text="<i class='fa fa-spinner fa-pulse fa-fw'></i> Saving...">Save and continue <span class="fa fa-chevron-right fa-fw"></span></button>
+  </div>
+{% endblock %}

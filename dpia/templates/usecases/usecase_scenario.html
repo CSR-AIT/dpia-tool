@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% load staticfiles %}
+
+{% block title %}<title> {{ u }} | Data Protection Impact Assessment </title> {% endblock %}
+
+{% block panel_title %}{{ u.name }}{% endblock %}
+
+{% block content %}
+  <table class="table table-condensed">
+    <tbody>
+      <tr>
+        <td style="border:0;" width="15%">
+          <strong>Use case:</strong>
+        </td>
+        <td style="border:0;">
+          {{ u.name }}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Domain:</strong>
+        </td>
+        <td>
+          {{ u.domain }}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Business goal:</strong>
+        </td>
+        <td>
+          {{ u.business_goal }}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Scenario:</strong>
+        </td>
+        <td>
+          Each system identified in the tables should be described including workflows of personal data (the categories of data subjects and category, nature of the process, the recipient to whom data may be disclosed, how information is provided to the data subject, retention policy, technology uses, communication protocols uses , etc. ). A clear description of the data flows, including the primary assets on which the processing of personal data rely on (e.g. a database acting as a repository of the data collected in a certain area) should be provided.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <table id="id_forms_table" class="table table-condensed">
+    <thead>
+      <tr>
+        <th>Step</th>
+        <th>Description</th>
+        <th>
+          Information Producer
+          <!-- New Actor -->
+          <a class="js-add-actor btn btn-default btn-xs" href="javascript:void(0)" data-url="{% url 'actor_add' id=u.id %}" title="Add new Actor"><i class="fa fa-plus"></i></a>
+        </th>
+        <th>
+          Information Receiver
+          <!-- New Actor -->
+          <a class="js-add-actor btn btn-default btn-xs" href="javascript:void(0)" data-url="{% url 'actor_add' id=u.id %}" title="Add new Actor"><i class="fa fa-plus"></i></a>
+        </th>
+        <th>
+          Information Exchanged
+          <!-- New Primary Asset -->
+        <a class="js-add-primary btn btn-default btn-xs" href="javascript:void(0)" data-url="{% url 'primary_add' id=u.id %}" title="Add new primary asset"><i class="fa fa-plus"></i></a>
+        </th>
+        <th></th>
+        <!-- <th></th> -->
+      </tr>
+    </thead>
+    <tbody>
+      {{ process_formset.management_form }}
+      {% for form in process_formset.forms %}
+        {% for hidden in form.hidden_fields %}
+          {{ hidden }}
+        {% endfor %}
+        <tr id="{{ form.prefix }}-row" class="dynamic-form">
+          <td width="2%">
+            {% if form.instance.id %}
+              {{ forloop.counter }}
+            {% endif %}
+          </td>
+          <td class="form-group {% if form.description.errors %}has-error{%endif%}">
+            {{ form.description }}
+            {% for error in form.description.errors %}
+              <span class="help-block">{{ error }}</span>
+            {% endfor %}
+          </td>
+          <td width="20%" class="form-group {% if form.information_producer.errors %}has-error{%endif%}">
+            {{ form.information_producer|add_class:"form-control"|attr:"class:actors" }}
+            {% for error in form.information_producer.errors %}
+              <span class="help-block">{{ error }}</span>
+            {% endfor %}
+          </td>
+          <td width="20%" class="form-group {% if form.information_receiver.errors %}has-error{%endif%}">
+            {{ form.information_receiver|add_class:"form-control"|attr:"class:actors" }}
+            {% for error in form.information_receiver.errors %}
+              <span class="help-block">{{ error }}</span>
+            {% endfor %}
+          </td>
+          <td width="20%" class="form-group {% if form.information_exchanged.errors %}has-error{%endif%}">
+            {{ form.information_exchanged|add_class:"form-control"|attr:"class:primaries" }}
+            {% for error in form.information_exchanged.errors %}
+              <span class="help-block">{{ error }}</span>
+            {% endfor %}
+          </td>
+          {% if form.instance.id %}
+            <td width="5%">
+              <div class="dropdown pull-right">
+                <button class="button_link dropdown-toggle" type="button" data-toggle="dropdown">
+                  <span class="fa fa-chevron-down"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="javascript:void(0)" class="add" data-form="{% url 'process_delete' id=form.instance.id %}" title="Delete {{ form.instance.description }}">Delete process</a>
+                  </li>
+                  {% if form.instance.information_exchanged %}
+                    <!-- <li>
+                      <a class="js-edit-primary" href="javascript:void(0)" data-url="{% url 'primary_process_edit' primary_id=form.instance.information_exchanged.id u_id=u.id %}" title='Edit "{{ form.instance.information_exchanged }}"'>Edit "{{ form.instance.information_exchanged }}"</a>
+                    </li> -->
+                  {% endif %}
+                </ul>
+              </div>
+            </td>
+            <!-- {% if form.instance.information_exchanged %}
+              <td width="5%">
+                <div class="dropdown pull-right">
+                  <button class="button_link dropdown-toggle" type="button" data-toggle="dropdown">
+                    <span class="fa fa-chevron-down"></span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a class="js-edit-primary" href="javascript:void(0)" data-url="{% url 'primary_process_edit' primary_id=form.instance.information_exchanged.id u_id=u.id %}" title='Edit "{{ form.instance.information_exchanged }}"'>Edit "{{ form.instance.information_exchanged }}"</a></li>
+                  </ul>
+                </div>
+              </td>
+            {% endif %} -->
+          {% else %}
+            <td>
+            </td>
+          {% endif %}
+          <td width="2%" {% if forloop.last or not forloop.last %}class="hidden" {% endif %}>
+            <a id="remove-{{ form.prefix }}-row" href="javascript:void(0)" class="delete-row" title="Remove row"><small>Remove</small></a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock %}
+
+{% block paginator_buttons %}
+  <div class="paginator_panel">
+    <a href="{% url 'usecases' id=q.id %}" class="pull-left btn btn-default"> <span class="fa fa-chevron-left fa-fw"></span> Use Cases</a>
+    <button type="submit" name="_save" class="btn btn-primary pull-right m-l-10">Add processes</button>
+    <a title="Add new process" href="javascript:void(0)" class="add-row btn btn-info pull-right disable">New process</a>
+  </div>
+{% endblock %}

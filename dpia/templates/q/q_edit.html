@@ -1,0 +1,43 @@
+{% load crispy_forms_tags %}
+
+<form class="js-edit-form" method="post" action="{% url 'q_edit' q_id=q.id %}">{% csrf_token %}
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="modal-title">Update {{q}}</h4>
+  </div>
+  <div class="modal-body">
+    <!-- Errors -->
+    <div class="outer_error">
+      <div class="inner_error">
+        <!-- Error messages -->
+      </div>
+    </div>
+    {{ q_form|crispy }}
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <button type="submit" class="btn btn-primary">Save changes</button>
+  </div>
+</form>
+
+
+<!-- Activate "required" attribute in Safari -->
+<!-- <script>
+  $("form").submit(function(e) {
+    var ref = $(this).find("[required]");
+    $(ref).each(function(){
+      if ( $(this).val() == '' ) {
+        $('div.inner_error').replaceWith("<i class=fa>&#xf06a;</i> Please fill out the fields.");
+        $('div.outer_error').addClass("alert alert-danger");
+
+        // alert("Please fill out the fields.");
+        $(this).focus();
+        e.preventDefault();
+        return false;
+      }
+    });
+    return true;
+  });
+</script> -->

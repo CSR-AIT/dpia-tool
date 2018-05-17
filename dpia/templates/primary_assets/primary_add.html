@@ -1,0 +1,55 @@
+<form class="js-add-form" method="post" action="{% url 'primary_list_add' q.id %}">{% csrf_token %}
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="modal-title">Add Primary Asset</h4>
+  </div>
+  <div class="modal-body">
+    <div class="outer_error">
+      <div class="inner_error">
+      </div>
+    </div>
+    {% for hidden in primary_form.hidden_fields %}
+      {{ hidden }}
+    {% endfor %}
+    {% for field in primary_form.visible_fields %}
+      <div class="form-group {% if field.errors %}has-error{%endif%}">
+        <label {% if field.errors %}class="help-block"{%endif%} for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %}*{% endif %}</label>
+        {{ field }}
+        {% if field.label == "Level of identification" %}
+          <div class="small" style="padding-top:5px;">
+            <a tabindex="0" role="button" data-toggle="popover" data-placement="left" data-trigger="focus" data-html="true" title="Level of Identification" data-content="
+            <b>Negligible</b>: Identifying an individual using their personal data appears to be virtually impossible.
+            <br/>
+            <b>Limited</b>: Identifying an individual using their personal data appears to be difficult but is possible in certain cases.
+            <br/>
+            <b>Significant</b>: Identifying an individual using their personal data appears to be relatively easy.
+            <br/>
+            <b>Maximum</b>: Identifying an individual using their personal data appears to be extremely easy.">
+            <i class="fa fa-info-circle fa-fw"></i>{{ field.help_text }}</a>
+          </div>
+          {% elif field.label == "Required" %}
+            {% if field.help_text %}
+              <div class="small help-block">
+                {{ field.help_text }}
+              </div>
+            {% endif %}
+        {% endif %}
+        {% for error in field.errors %}
+          <span class="help-block">{{ error }}</span>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <button type="submit" class="btn btn-primary">Save</button>
+  </div>
+</form>
+
+{% load staticfiles %}
+<script>
+  var url = "{% static 'js/popover.js' %}";
+  $.getScript(url);
+</script>

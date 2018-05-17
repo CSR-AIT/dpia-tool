@@ -1,0 +1,25 @@
+{% if messages %}
+  {% for message in messages %}
+    <div class="outer_success">
+      <div {% if message.tags %} class="inner_success alert alert-{{ message.tags }} alert-dismissible m-b-5" {% endif %} role="alert">
+        {% if message.tags == "success" %}
+          <i class="fa fa-check-circle fa-fw"></i>
+        {% elif message.tags == "info" %}
+          <i class="fa fa-info-circle fa-fw"></i>
+        {% elif message.tags == "danger" %}
+          <i class="fa fa-exclamation-circle fa-fw"></i>
+        {% elif message.tags == "warning" %}
+          <i class="fa fa-exclamation-triangle fa-fw"></i>
+        {% endif %}
+        {{ message }}
+      </div>
+    </div>
+  {% endfor %}
+{% endif %}
+
+{% if not messages %}
+  <div class="outer_success alert alert-success m-b-5 m-t-1">
+    <div class="inner_success" role="alert">
+    </div>
+  </div>
+{% endif %}

@@ -1,0 +1,58 @@
+{% load staticfiles %}
+
+<!-- General JS -->
+<script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'bootstrap-3.3.7/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/jquery.jgrowl.js' %}"></script>
+
+<!-- X-CSRFToken -->
+<script>
+  // using jQuery
+  function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          var cookies = document.cookie.split(';');
+          for (var i = 0; i < cookies.length; i++) {
+              var cookie = jQuery.trim(cookies[i]);
+              // Does this cookie string begin with the name we want?
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+
+  var csrftoken = getCookie('csrftoken');
+
+  function csrfSafeMethod(method) {
+      // these HTTP methods do not require CSRF protection
+      return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+  }
+  $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+      }
+  });
+</script>
+<!-- JS Modals -->
+<script type="text/javascript" src="{% static 'js/modals.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/js_modals.js' %}"></script> <!-- For all but the ones below -->
+<script type="text/javascript" src="{% static 'js/js_sources.js' %}"></script> <!-- Only for Sources -->
+<script type="text/javascript" src="{% static 'js/js_primary.js' %}"></script> <!-- Only for Primary-process -->
+<script type="text/javascript" src="{% static 'js/js_actors.js' %}"></script> <!-- Only for Actors -->
+<!-- Popover -->
+<script type="text/javascript" src="{% static 'js/popover.js' %}"></script>
+<!-- Tooltip -->
+<script type="text/javascript" src="{% static 'js/tooltips.js' %}"></script>
+<!-- Sidebar -->
+<script type="text/javascript" src="{% static 'js/sidebar.js' %}"></script>
+<!-- Add/Delete dynamic form -->
+<script type="text/javascript" src="{% static 'js/add-delete-form.js' %}"></script>
+<!-- Dynamic formset -->
+<script type="text/javascript" src="{% static 'js/dynamic-formset.js' %}"></script>
+<!-- Loading Button -->
+<script type="text/javascript" src="{% static 'js/load_button.js' %}"></script>

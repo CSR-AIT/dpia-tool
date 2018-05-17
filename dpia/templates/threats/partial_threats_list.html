@@ -1,0 +1,44 @@
+{% for supporting_asset in supporting_assets %}
+  <tr>
+    <td>
+      {{ forloop.counter }}
+    </td>
+    <td>
+      {{ supporting_asset }}
+    </td>
+    <td>
+      {{ supporting_asset.supporting_type }}
+    </td>
+    <td>
+      {% if supporting_asset.supporting_in_threatsarel.all %}
+        {% for threat_sa_rel in supporting_asset.supporting_in_threatsarel.all %}
+          <div class="btn-group btn-group-xs mb-5" role="group">
+            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+              {{ threat_sa_rel.threat }} ({{ threat_sa_rel.threat.type_of_jeopardy}})
+            </button>
+            <a title='Remove "{{ threat_sa_rel.threat }}"' class="js-delete btn btn-default" href="javascript:void(0)" data-url="{% url 'threat_rel_delete' q_id=q.id threat_id=threat_sa_rel.id %}">
+              <i class="fa fa-trash fa-fw"></i>
+            </a>
+          </div>
+          <br/>
+        {% endfor %}
+      {% endif %}
+    </td>
+    <td>
+      <div class="btn-group btn-group-xs" role="group">
+        <a class="js-edit btn btn-default" href="javascript:void(0)" data-url="{% url 'threat_sa_rel_add' supporting_asset.id %}" title='Add generic threats to "{{ supporting_asset }}"'>
+          <i class="fa fa-plus fa-fw"></i> Generic threats
+        </a>
+        <a class="js-edit btn btn-default" href="javascript:void(0)" data-url="{% url 'threat_add' q.id supporting_asset.id %}" title='Add new threat to "{{ supporting_asset }}"'>
+          <i class="fa fa-plus-square fa-fw"></i> New threat
+        </a>
+      </div>
+    </td>
+  <tr>
+{% empty %}
+  <tr>
+    <td colspan="5" class="text-muted bg-warning">
+      <i class="fa fa-chevron-left fa-fw"></i> Go back and add Supporting Assets.
+    </td>
+  </tr>
+{% endfor %}

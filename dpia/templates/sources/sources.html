@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load access_tags %}
+
+{% block title %}<title>Sources | Data Protection Impact Assessment</title> {% endblock %}
+
+{% block panel_title %}Sources{% endblock %}
+
+{% block p_text %}
+  <p class="font-13">
+    The necessary resources that will be used in order to execute the DPIA will be obtained through interviews or available documents such as:
+    <ul class="m-b-10">
+      <li>Project documents such as project plan, project initiation document, business case;</li>
+      <li>Architectures, such as IT and enterprise architectures;</li>
+      <li>Requirements documentation, such as functional, technical and non-functional requirements;</li>
+      <li>Type of data to be generated and its purpose of use;</li>
+      <li>Contracts with system engineers, IT hosting parties, IT service providers, installation and service providers;</li>
+      <li>System design documentation, such as interface design, communication protocols.</li>
+    </ul>
+  </p>
+{% endblock %}
+
+{% block content %}
+  <ul class="nav navbar-right panel_toolbox m-b-30">
+    <!-- <a class="add btn btn-default" data-form="{% url 'export_data' q_id=q.id %}"><i class="fa fa-download"></i> Export</a>
+    <a class="add btn btn-default" data-form="{% url 'import_data' q_id=q.id %}"><i class="fa fa-upload"></i> Import</a> -->
+    <button type="button" class="btn btn-default js-add-source" href="javascript:void(0)" data-url="{% url 'add_source' q.id %}"><i class="fa fa-plus fa-fw"></i> New Source</button>
+  </ul>
+  <table class="table table-condensed" id="source_table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Purpose</th>
+        <th>File</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% include 'sources/partial_source_list.html' %}
+    </tbody>
+  </table>
+{% endblock %}
+
+{% block paginator_buttons %}
+  <div class="paginator_panel">
+    <a href="{% url 'members' q.id %}" class="pull-left btn btn-default"><span class="fa fa-chevron-left fa-fw"></span> Previous</a>
+    <a href="{% url 'primary_list' q.id %}" class="pull-right btn btn-primary">Next <span class="fa fa-chevron-right fa-fw"></span></a>
+  </div>
+{% endblock %}

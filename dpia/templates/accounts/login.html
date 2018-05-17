@@ -1,0 +1,45 @@
+{% extends 'accounts/base.html' %}
+
+{% block h2_title %}Sign In{% endblock %}
+
+<!-- {% block forgot_password %}
+  <ul class="nav navbar-right panel_toolbox">
+    <div class="dropdown pull-right">
+      <button class="button_link dropdown-toggle" type="button" data-toggle="dropdown">
+        <span class="fa fa-chevron-down"></span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+        <li><a href="{% url 'password_reset' %}">Forgot Password?</a></li>
+      </ul>
+    </div>
+  </ul>
+{% endblock %} -->
+
+{% block auth_content %}
+  <form role="form" method="post" action="">{% csrf_token %}
+    <div class="form-group">
+      <label for="_username">Email or Username*</label>
+      <input id="_username" type="text" class="form-control" name="username" required autofocus />
+    </div>
+    <div class="form-group m-t-20">
+      <span>
+        <label for="_username">Password*</label>
+        <span class="pull-right small"><a href="{% url 'password_reset' %}">Forgot password?</a></span>
+        <input type="password" class="form-control" name="password" required />
+      </span>
+    </div>
+    <br />
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary btn-block submit">Sign In</button>
+      {% if next %}
+        <input type="hidden" name="next" value="{{ request.path|urlencode }}" />
+      {% endif %}
+      <br/>
+      <div class="separator">
+        <p class="center">New to DPIA?
+          <a href="{% url 'register' %}"><i class="fa fa-user-plus fa-fw"></i>Create Account</a>
+        </p>
+      </div>
+    </div>
+  </form>
+{% endblock %}

@@ -1,0 +1,699 @@
+{% extends "base.html" %}
+{% block title %}<title> Finalize Assessment | Data Protection Impact Assessment </title> {% endblock %}
+{% load filename %}
+
+{% block generate_report %}
+  <p class="text-center m-b-10">
+    <a href="{% url 'pdf_reportlab' q_id=q.id %}" class="btn btn-default" target="_blank">PDF <i class="fa fa-external-link fa-fw"></i></a>
+    <a href="{% url 'generate_docx' q_id=q.id %}" class="btn btn-default" target="_blank">DOCX <i class="fa fa-external-link fa-fw"></i></a>
+  </p>
+{% endblock %}
+
+{% block content_preview %}
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2><a href="{% url 'members' q_id=q.id %}">1. Team Members</a></h2>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Expertise</th>
+              <th>Responsibility in this DPIA</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for membership in q.q_in_membership.all %}
+              <tr>
+                <td>
+                  {% if membership.member.get_full_name %}
+                    {{ membership.member.get_full_name }}
+                  {% else %}
+                    {{ membership.member.username }}
+                  {% endif %}
+                </td>
+                <td>
+                  {{ membership.member.user_profile.expertise }}
+                </td>
+                <td>
+                  {{ membership.responsibility_in_dpia }}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2><a href="{% url 'sources' q_id=q.id %}">2. Sources</a></h2>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+        <!-- Table -->
+        <table class="table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Type</th>
+              <th>Purpose</th>
+              <th>File</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for source in q.q_in_source.all %}
+              <tr>
+                <td>
+                  {{ forloop.counter }}
+                </td>
+                <td>
+                  {{ source.name }}
+                </td>
+                <td>
+                  {{ source.description }}
+                </td>
+                <td>
+                  {{ source.source_type }}
+                </td>
+                <td>
+                  {{ source.purpose }}
+                </td>
+                {% check_file source.source_file|filename as not_empty %}
+                {% if not_empty %}
+                  <td width="20%">
+                    <a href="{% url 'download_source_file' source.id %}" title="Download File">{{ source.source_file|filename }}</a>
+                  </td>
+                {% else %}
+                  <td width="10%" class="text-muted"><i class="fa fa-file-o fa-fw"></i> No file</td>
+                {% endif %}
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="6" class="bg-warning text-muted">
+                  0 Sources
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+          <h2><a href="{% url 'usecases' id=q.id %}">3. Use Cases</a></h2>
+        <div class="clearfix"></div>
+      </div>
+      <br />
+
+      {% for usecase in q.usecase.all  %}
+      <div>
+        <h2>3.{{ forloop.counter }}. {{ usecase.name}}</h2>
+        <p><strong>Domain: </strong>{{ usecase.domain}}</p>
+        <p><strong>Description: </strong>{{ usecase.description}}</p>
+        <p><strong>Business Goal: </strong>{{ usecase.business_goal}}</p>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+      <h4><strong>Scenario</strong></h4>
+      <div class="panel panel-default">
+        <div class="panel-body table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Step Nr.</th>
+                <th>Description</th>
+                <th>Information Exchanged</th>
+                <th>Information Producer</th>
+                <th>Information Receiver</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for process in usecase.process.all %}
+                <tr>
+                  <td>
+                    {{ forloop.counter }}
+                  </td>
+                  <td>
+                    {{ process.description }}
+                  </td>
+                  <td>
+                    {{ process.information_exchanged }}
+                  </td>
+                  <td>
+                    {{ process.information_producer }}
+                  </td>
+                  <td>
+                    {{ process.information_receiver }}
+                  </td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="5" class="bg-warning text-muted">
+                    0 Processes
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <br />
+      </div>
+
+      {% endfor %}
+    </div>
+  </div> -->
+
+
+
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2><a href="{% url 'primary_list' q_id=q.id %}">3. Primary Assets and Supporting Assets</a></h2>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+        <!-- Table -->
+        <table class="table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Reading Frequency</th>
+              <th>Retention Time</th>
+              <th>Required</th>
+              <th>Supporting Assets (SA)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for primary in q.q_in_primary.all  %}
+              <tr {% if not primary.required %} class="text-muted" {% endif %}>
+                <td> {{ forloop.counter }}</td>
+                <td> {{ primary.name }}</td>
+                <td> {{ primary.reading_frequency }}</td>
+                <td> {{ primary.retention_time }}</td>
+                <td> {{ primary.required|yesno:"Yes, No" }}</td>
+                <td>
+                  {% for supporting_rel in primary.primary_in_psrel.all %}
+                    {{ supporting_rel.supporting }};
+                  {% endfor %}
+                </td>
+              </tr>
+            {% empty %}
+              <td colspan="6" class="bg-warning text-muted">
+                0 Primary Assets
+              </td>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2>4. Summary of DPIA Results</h2>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+          <h4><strong>4.1. Summary of Highest Risks</strong></h4>
+          <hr/>
+          <!-- RISK LEVELS -->
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Type of Jeopardy</th>
+                <th>
+                  <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="left" data-html="true" title="Impact" data-content="
+                  <b>Impact</b> = Level of identification of primary asset + Prejudicial effect of the risk">Impact</a>
+                </th>
+                <th>Max Likelihood</th>
+                <th>
+                  <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="left" data-html="true" title="Risk Level"
+                  data-content="
+                    <p><b>Risks with a low severity and likelihood</b> may be taken, especially since the treatment of other risks could also lead to their treatment.</p>
+                    <p><b>Risks with a low severity but a high likelihood</b> must be reduced by implementing security measures that reduce their likelihood. Emphasis must be placed on recovery measures.</p>
+                    <p><b>Risks with a high severity but a low likelihood</b> must be avoided or reduced by implementing security measures that reduce either their severity or their likelihood. Emphasis must be placed on preventive measures.</p>
+                    <p><b>Risks with a high severity and likelihood</b> must absolutely be avoided or reduced by implementing security measures that reduce both their severity and their likelihood. Ideally, care should even be taken to ensure that these risks are treated by independent measures of prevention (actions taken prior to a damaging event), protection (actions taken during a damaging event) and recovery (actions taken after a damaging event).</p>
+                    ">
+                    Risk Level
+                  </a>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for risk in high_risks %}
+                <tr>
+                  <td> {{ forloop.counter }}</td>
+                  <td> {{ risk.type_of_jeopardy }} of {{ risk.primary_asset_affected }}</td>
+                  <td>
+                    {% with impact=risk.impact %}
+                      <p>
+                        {% if impact < 5 %}
+                          <span class="label label-negligible">Negligible</span>
+                        {% elif impact == 5 %}
+                          <span class="label label-limited">Limited</span>
+                        {% elif impact == 6 %}
+                          <span class="label label-significant">Significant</span>
+                        {% elif impact > 6 and impact <= 10 %}
+                          <span class="label label-danger">Maximum</span>
+                        {% else %}
+                          <span class="text-muted">Not calculated</span>
+                        {% endif %}
+                      </p>
+                    {% endwith %}
+                  </td>
+                  <td>
+                    {% with likelihood=risk.max_likelihood %}
+                      {% if likelihood < 5 %}
+                        <span class="label label-negligible">Negligible</span>
+                      {% elif likelihood == 5 %}
+                        <span class="label label-limited">Limited</span>
+                      {% elif likelihood == 6 %}
+                        <span class="label label-significant">Significant</span>
+                      {% elif likelihood > 6 and likelihood <= 10 %}
+                        <span class="label label-danger">Maximum</span>
+                      {% else %}
+                        <!-- empty -->
+                      {% endif %}
+                    {% endwith %}
+                  </td>
+                  <td>
+                    {% with max_likelihood=risk.max_likelihood %}
+                      {% with impact=risk.impact %}
+                        {% if max_likelihood <= 5 and impact <= 5 %}
+                          <span class="label label-negligible">Negligible</span>
+                          ... may be taken, especially since the treatment of other risks could also lead to its treatment.
+                        {% elif max_likelihood >= 6 and impact <= 5 %}
+                          <span class="label label-limited">Limited</span>
+                          ... must be reduced by implementing security measures that reduce its likelihood. Emphasis must be placed on recovery measures.
+                        {% elif max_likelihood <= 5 and impact >= 6 %}
+                          <span class="label label-significant">Significant</span>
+                          ... must be avoided or reduced by implementing security measures that reduce either its severity or its likelihood. Emphasis must be placed on preventive measures.
+                        {% elif max_likelihood >= 6 and impact >= 6 %}
+                          <span class="label label-danger">Maximum</span>
+                          ... must absolutely be avoided or reduced by implementing security measures that reduce both its severity and its likelihood. Ideally, care should even be taken to ensure that this risk is treated by independent measures of prevention (actions taken prior to a damaging event), protection (actions taken during a damaging event) and recovery (actions taken after a damaging event).
+                        {% else %}
+                          Not calculated.
+                        {% endif %}
+                      {% endwith %}
+                    {% endwith %}
+                  </td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="5" class="bg-warning text-muted">
+                    0 High Risks
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <hr />
+          <br />
+          <!-- Essential Controls -->
+          <h4><strong>4.2. Summary of Essential Controls</strong></h4>
+          <hr/>
+          <!-- Table -->
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Affected Supporting Asset</th>
+                <th>Threat</th>
+                <th>
+                  <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="left" data-html="true" title="Likelihood" data-content="
+                  <b>Likelihood</b> = Level of vulnerability of the supporting asset + Capability of the risk source for the exploitation of this vulnerability.">
+                  Likelihood</a>
+                </th>
+                <th>Control</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for threat_sa_rel in high_threats %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ threat_sa_rel.affected_supporting_asset }}</td>
+                  <td>{{ threat_sa_rel.threat }}</td>
+                  <td>
+                    {% with likelihood=threat_sa_rel.likelihood %}
+                      {% if likelihood < 5 and likelihood > 0 %}
+                        <span class="label label-negligible">Negligible</span>
+                      {% elif likelihood == 5 %}
+                        <span class="label label-limited">Limited</span>
+                      {% elif likelihood == 6 %}
+                        <span class="label label-significant">Significant</span>
+                      {% elif likelihood > 6 %}
+                        <span class="label label-danger">Maximum</span>
+                      {% else %}
+                        <span class="label label-default">Not calculated</span>
+                      {% endif %}
+                    {% endwith %}
+                  </td>
+                  <td>{{ threat_sa_rel.control }}</td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="5" class="bg-warning text-muted">
+                    0 High Threats
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2><a href="{% url 'risk_assessment' q_id=q.id %}">5. Risks</a></h2>
+        <div class="clearfix"></div>
+      </div>
+      {% for risk in risks %}
+        <div>
+          <h4>5.{{ forloop.counter }}. Risk to {{ risk.type_of_jeopardy }} of {{ risk.primary_asset_affected }}</h4>
+          <p>
+            <strong>Risk Level: </strong>
+            {% with max_likelihood=risk.max_likelihood %}
+              {% with impact=risk.impact %}
+                {% if max_likelihood <= 5 and impact <= 5 and impact > 0 %}
+                  <span class="label label-negligible">Negligible</span>
+                  ... may be taken, especially since the treatment of other risks could also lead to its treatment.
+                {% elif max_likelihood >= 6 and impact <= 5 %}
+                  <span class="label label-limited">Limited</span>
+                  ... must be reduced by implementing security measures that reduce its likelihood. Emphasis must be placed on recovery measures.
+                {% elif max_likelihood <= 5 and impact >= 6 %}
+                  <span class="label label-significant">Significant</span>
+                  ... must be avoided or reduced by implementing security measures that reduce either its severity or its likelihood. Emphasis must be placed on preventive measures.
+                {% elif max_likelihood >= 6 and impact >= 6 %}
+                  <span class="label label-danger">Maximum</span>
+                  ... must absolutely be avoided or reduced by implementing security measures that reduce both its severity and its likelihood. Ideally, care should even be taken to ensure that this risk is treated by independent measures of prevention (actions taken prior to a damaging event), protection (actions taken during a damaging event) and recovery (actions taken after a damaging event).
+                {% else %}
+                  <span class="label label-default">Not calculated</span>
+                {% endif %}
+              {% endwith %}
+            {% endwith %}
+          </p>
+          <p><strong>Consequences: </strong>{{ risk.consequences }}</p>
+          <p><strong>Risk Owner:</strong> {{ risk.risk_owner }}</p>
+
+          {% with impact=risk.impact %}
+            <p>
+              <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="bottom" data-html="true" title="Impact" data-content="
+              <b>Impact</b> = Level of identification of primary asset + Prejudicial effect of the risk">Impact:</a>
+              {% if impact < 5 and impact > 0 %}
+                <span class="label label-negligible">Negligible</span>
+              {% elif impact == 5 %}
+                <span class="label label-limited">Limited</span>
+              {% elif impact == 6 %}
+                <span class="label label-significant">Significant</span>
+              {% elif impact > 6 and impact <= 10 %}
+                <span class="label label-danger">Maximum</span>
+              {% else %}
+                <span class="label label-default">Not calculated</span>
+              {% endif %}
+            </p>
+          {% endwith %}
+          <ul>
+            <li>
+              <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-html="true" data-placement="bottom" title="Level of Identification" data-content="
+              <b>Negligible</b>: Identifying an individual using their personal data appears to be virtually impossible.
+              <br/>
+              <b>Limited</b>: Identifying an individual using their personal data appears to be difficult but is possible in certain cases.
+              <br/>
+              <b>Significant</b>: Identifying an individual using their personal data appears to be relatively easy.
+              <br/>
+              <b>Maximum</b>: Identifying an individual using their personal data appears to be extremely easy.">Level of Identification of Primary Asset:</a>
+              <!-- {{ risk.primary_asset_affected.get_level_of_identification_display }} -->
+              {% with level_of_identification=risk.primary_asset_affected.level_of_identification %}
+                {% if level_of_identification == 1 %}
+                  <span class="label label-negligible">Negligible</span>
+                {% elif level_of_identification == 2 %}
+                  <span class="label label-limited">Limited</span>
+                {% elif level_of_identification == 3 %}
+                  <span class="label label-significant">Significant</span>
+                {% elif level_of_identification == 4 %}
+                  <span class="label label-danger">Maximum</span>
+                {% else %}
+                  <span class="label label-default">None</span>
+                {% endif %}
+              {% endwith %}
+            </li>
+            <li>
+              <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="bottom" data-html="true" title="Prejudicial Effects" data-content="
+              <b>Negligible</b>: Data subjects either will not be affected or may encounter a few inconveniences, which they will overcome without any problem.
+              <br/>
+              <b>Limited</b>: Data subjects may encounter significant inconveniences, which they will be able to overcome despite a few difficulties.
+              <br/>
+              <b>Significant</b>: Data subjects may encounter significant consequences, which they should be able to overcome albeit with serious difficulties.
+              <br/>
+              <b>Maximum</b>: Data subjects may encounter significant, or even irreversible, consequences, which they may not overcome.">Prejudicial Effects:</a> <!-- {{ risk.get_prejudicial_effects_display }} -->
+              <!-- {{ risk.primary_asset_affected.get_level_of_identification_display }} -->
+              {% with prejudicial_effects=risk.prejudicial_effects %}
+                {% if prejudicial_effects == 1 %}
+                  <span class="label label-negligible">Negligible</span>
+                {% elif prejudicial_effects == 2 %}
+                  <span class="label label-limited">Limited</span>
+                {% elif prejudicial_effects == 3 %}
+                  <span class="label label-significant">Significant</span>
+                {% elif prejudicial_effects == 4 %}
+                  <span class="label label-danger">Maximum</span>
+                {% else %}
+                  <span class="label label-default">None</span>
+                {% endif %}
+              {% endwith %}
+            </li>
+          </ul>
+          <p><strong>Risk Treatment:</strong> {{ risk.risk_treatment}}</p>
+          <p><strong>Residual Risk:</strong> {{ risk.residual_risk}}</p>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+          <h4>Potential Threats</h4>
+          <div class="panel panel-default">
+            <div class="panel-body table-responsive">
+            <table class="table">
+              <thead>
+                <!-- <th>#</th> -->
+                <th>Affected Supporting Asset</th>
+                <th>Threat</th>
+                <th>
+                  <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="left"  data-html="true" title="Level of vulnerability" data-content="
+                  <b>Negligible</b>: Carrying out a threat by exploiting the properties of supporting assets does not appear possible.
+                  <br/>
+                  <b>Limited</b>: Carrying out a threat by exploiting the properties of supporting assets appears to be difficult.
+                  <br/>
+                  <b>Significant</b>: Carrying out a threat by exploiting the properties of supporting assets appears to be possible.
+                  <br/>
+                  <b>Maximum</b>: Carrying out a threat by exploiting the properties of supporting assets appears to be extremely easy.">
+                  Level of vulnerability</a>
+                </th>
+                <th>
+                  <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="left" data-html="true" title="Risk source capability" data-content="
+                  <b>Negligible</b>: Risk sources do not appear to have any special capabilities to carry out a threat.
+                  <br/>
+                  <b>Limited</b>: The capabilities of risks sources to carry out a threat are limited.
+                  <br/>
+                  <b>Significant</b>: The capabilities of risk sources to carry out a threat are real and significant.
+                  <br/>
+                  <b>Maximum</b>: The capabilities of risk sources to carry out a threat are definite and unlimited.">
+                  Risk souce capability</a>
+                </th>
+                <th>
+                  <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="left" data-html="true" title="Likelihood" data-content="
+                  <b>Likelihood</b> = Level of vulnerability of the supporting asset + Capability of the risk source for the exploitation of this vulnerability.">
+                  Likelihood</a>
+                </th>
+                <th>Control</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for pa_sa_rel in risk.primary_asset_affected.primary_in_psrel.all %}
+                {% for threat in pa_sa_rel.supporting.supporting_in_threatsarel.all|dictsortreversed:"likelihood" %}
+                  {% if threat.threat.type_of_jeopardy == risk.type_of_jeopardy %}
+                    <tr>
+                      <!-- <td> {{ forloop.counter }} </td> -->
+                      <td> {{ pa_sa_rel.supporting }} </td>
+                      <td> {{ threat.threat }} </td>
+                      <td>
+                        {{ threat.get_level_of_vulnerability_display }}
+                      </td>
+                      <td>
+                        {{ threat.get_risk_source_capability_display }}
+                      </td>
+                      <td>
+                        {% with likelihood=threat.likelihood %}
+                          {% if likelihood < 5 and likelihood > 0 %}
+                            <span class="label label-negligible">Negligible</span>
+                          {% elif likelihood == 5 %}
+                            <span class="label label-limited">Limited</span>
+                          {% elif likelihood == 6 %}
+                            <span class="label label-significant">Significant</span>
+                          {% elif likelihood > 6  %}
+                            <span class="label label-danger">Maximum</span>
+                          {% else %}
+                            <span class="label label-default">Not calculated</span>
+                          {% endif %}
+                        {% endwith %}
+                      </td>
+                      <td>
+                        {{ threat.control }}
+                      </td>
+                    </tr>
+                  {% endif %}
+                {% endfor %}
+              {% endfor %}
+            </tbody>
+          </table>
+          </div>
+        </div>
+        <br />
+        </div>
+      {% empty %}
+        <div class="bg-warning text-muted">
+          0 Risks
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+
+
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2><a href="{% url 'privacy_target_identification' q_id=q.id %}">6. Privacy Targets</a></h2>
+        <div class="clearfix"></div>
+      </div>
+      {% for privacy_q_rel in ptargets %}
+        <div>
+          <h4>6.{{ forloop.counter }}. {{ privacy_q_rel.privacy_target }} </h4>
+          <p><strong>Description:</strong> {{ privacy_q_rel.privacy_target.description }}</p>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+          {% if privacy_q_rel.privacy_threats.all %}
+            <h4>Potential Threats</h4>
+            <div class="panel panel-default">
+              <div class="panel-body table-responsive">
+                <table class="table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Privacy Threat</th>
+                    <th>Affected Primary Assets</th>
+                    <th>Privacy Controls</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for privacy_threat_rel in privacy_q_rel.pqrel_in_pthreatrel.all %}
+                    <tr>
+                      <td> {{ forloop.counter }} </td>
+                      <td> {{ privacy_threat_rel.privacy_threat }} </td>
+                      <td>
+                        <table>
+                          <td>
+                            {% for pa in privacy_threat_rel.affected_primary_assets.all %}
+                              {{ pa }}</br>
+                            {% endfor %}
+                          </td>
+                        </table>
+                      </td>
+                      <td>
+                        <table>
+                          <td>
+                            {% for controls in privacy_threat_rel.controls.all %}
+                              {{ controls }}</br>
+                            {% endfor %}
+                          </td>
+                        </table>
+                      </td>
+                    </tr>
+                  {% empty %}
+                    <tr>
+                      <td colspan="5" class="bg-warning text-muted">
+                        0 Privacy Threats
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        {% else %}
+          <span class="label label-default">0 Privacy threats.</span>
+          </br>
+        {% endif %}
+        </br>
+      </div>
+      {% empty %}
+        <div class="bg-warning text-muted">
+          0 Privacy Targets
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <br />
+
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2><a href="{% url 'primary_list' q_id=q.id %}">Appendix A: Supporting Assets Types</a></h2>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Description</th>
+              <th>Supporting Asset Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for supporting_asset in q.q_in_supporting.all %}
+              <tr>
+                <td>
+                  {{ forloop.counter }}
+                </td>
+                <td>
+                  {{ supporting_asset.description }}
+                </td>
+                <td>
+                  {{ supporting_asset.supporting_type }}
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="3" class="bg-warning text-muted">
+                  0 Supporting Assets
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}

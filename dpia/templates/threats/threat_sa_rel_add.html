@@ -1,0 +1,55 @@
+<form class="js-add-form" method="post" action="{% url 'threat_sa_rel_add' supporting_object.id %}">{% csrf_token %}
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="modal-title">Add Threats to {{ supporting_object }}</h4>
+  </div>
+  <div class="modal-body">
+    <!-- Table -->
+    <table class="table table-condensed">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Jeopardy</th>
+          <th>Description</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Generic Threats -->
+        {% for threat in generic_threats %}
+          {% if threat.supporting_asset_type == supporting_object.supporting_type %}
+            <tr>
+              <td>
+                <label class="no_bold" for="{{ threat.id }}">{{ threat }}</label>
+              </td>
+              <td>
+                <label class="no_bold" for="{{ threat.id }}">{{ threat.type_of_jeopardy }}</label>
+              </td>
+              <td>
+                <label class="no_bold" for="{{ threat.id }}">{{ threat.description }}</label>
+              </td>
+              <td>
+                <input id="{{ threat.id }}" class="myCheckBox" type="checkbox" name="threat" value="{{ threat.id }}">
+              </td>
+            <tr>
+          {% endif %}
+        {% empty %}
+          Generic threats are not included in this version!
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <button id="confirmButton" type="submit" class="btn btn-primary">Add Threats</button>
+  </div>
+</form>
+
+
+{% load staticfiles %}
+<script>
+  var url = "{% static 'js/highlight_row.js' %}";
+  $.getScript(url);
+</script>

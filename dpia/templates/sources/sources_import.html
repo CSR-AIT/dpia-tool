@@ -1,0 +1,116 @@
+{% load staticfiles %}
+{% load progress_bar %}
+{% progress_bar_media %}
+
+<div class="modal-dialog modal-md" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <h4 class="modal-title">Import sources</h4>
+    </div>
+    <form class="add-form" method="post" enctype="multipart/form-data" action="{% url 'import_data' q_id=q.id %}">{% csrf_token %}
+      <div class="modal-body">
+        <p>
+          Formats accepted: <em>csv, xls, json, tsv, and yaml.</em>
+          <hr/>
+          <h5>Excel table example</h5>
+          <table class="table table-condensed">
+            <thead>
+              <tr>
+                <th style="text-transform:lowercase;">questionaire</th>
+                <th style="text-transform:lowercase;">id</th>
+                <th style="text-transform:lowercase;">name</th>
+                <th style="text-transform:lowercase;">description</th>
+                <th style="text-transform:lowercase;">source_type</th>
+                <th style="text-transform:lowercase;">purpose</th>
+              </tr>
+            </thead>
+            <tbody class="small">
+              <tr>
+                <td>
+                  {{ q.description }}
+                </td>
+                <td>
+                  <em>Leave empty</em>
+                </td>
+                <td>
+                  name1
+                </td>
+                <td>
+                  description1
+                </td>
+                <td>
+                  sourcetype1
+                </td>
+                <td>
+                  purpose1
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  {{ q.description }}
+                </td>
+                <td>
+                  <em>Leave empty</em>
+                </td>
+                <td>
+                  name2
+                </td>
+                <td>
+                  description2
+                </td>
+                <td>
+                  sourcetype2
+                </td>
+                <td>
+                  purpose2
+                </td>
+              </tr>
+              <tr>
+                <td colspan="6">
+                  .......
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </p>
+        <hr/>
+        <div class="form-group">
+          <label for="_file">File*</label>
+          <input id="_file" type="file" name="source_file" class="form-control m-b-10" required/>
+          <!-- Errors -->
+          <div class="outer_error">
+            <div class="inner_error">
+              <!-- Error messages -->
+            </div>
+          </div>
+        </div>
+        {% progress_bar %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" name="_import">Import</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- Activate "required" attribute in Safari -->
+<script>
+  $("form").submit(function(e) {
+    var ref = $(this).find("[required]");
+    $(ref).each(function(){
+      if ( $(this).val() == '' ) {
+        $('div.inner_error').replaceWith("<i class=fa>&#xf06a;</i> Please select a file.");
+        $('div.outer_error').addClass("alert alert-danger");
+        $(this).focus();
+        e.preventDefault();
+        return false;
+      }
+    });
+    return true;
+  });
+</script>

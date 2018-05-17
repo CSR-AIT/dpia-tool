@@ -1,0 +1,38 @@
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+<div class="modal-dialog modal-sm" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <h4 class="modal-title">Export sources</h4>
+    </div>
+    <form class="add-form" method="post" enctype="multipart/form-data" action="{% url 'export_data' q_id=q.id %}">{% csrf_token %}
+      <div class="modal-body">
+        <div class="form-group">
+          {{ format_form|crispy }}
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" name="_export" onclick="return close_modal()">Export</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Close modal on submit -->
+<script>
+  function close_modal() {
+    $("#addModal").modal("hide");
+    $.jGrowl('Sources were exported successfully.', {
+      sticky: false,
+      header: '<i class=fa fa-fw>&#xf058;</i> Success',
+      // openDuration: 'fast',
+      // closeDuration: 'fast',
+      position: 'top-right',
+    });
+  }
+</script>

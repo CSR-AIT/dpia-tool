@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}<title> Risk Mitigation | Data Protection Impact Assessment </title> {% endblock %}
+
+{% block panel_title %}Risk Mitigation{% endblock %}
+
+{% block p_text %}
+{% endblock %}
+
+{% block content %}
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Type of Jeopardy</th>
+        <th>Consequences</th>
+        <th>
+          <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="left" data-html="true" title="Impact" data-content="
+          <b>Impact</b> = Level of identification of primary asset + Prejudicial effect of the risk">
+          Impact <i class="fa fa-info-circle"></i></a>
+        </th>
+        <th>Threats</th>
+        <th>
+          <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="left" data-html="true" title="Risk Level"
+          data-content="
+            <p><b>Risks with a low severity and likelihood</b> may be taken, especially since the treatment of other risks could also lead to their treatment.</p>
+            <p><b>Risks with a low severity but a high likelihood</b> must be reduced by implementing security measures that reduce their likelihood. Emphasis must be placed on recovery measures.</p>
+            <p><b>Risks with a high severity but a low likelihood</b> must be avoided or reduced by implementing security measures that reduce either their severity or their likelihood. Emphasis must be placed on preventive measures.</p>
+            <p><b>Risks with a high severity and likelihood</b> must absolutely be avoided or reduced by implementing security measures that reduce both their severity and their likelihood. Ideally, care should even be taken to ensure that these risks are treated by independent measures of prevention (actions taken prior to a damaging event), protection (actions taken during a damaging event) and recovery (actions taken after a damaging event).</p>
+            ">
+            Risk Level <i class="fa fa-info-circle"></i>
+          </a>
+        </th>
+        <th>Risk Treatment</th>
+        <th>Residual Risk</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{ risk_formset.management_form }}
+      {% for form in risk_formset.forms %}
+        {% for hidden in form.hidden_fields %}
+          {{ hidden }}
+        {% endfor %}
+        <tr>
+          <td>
+            {{ forloop.counter }}
+          </td>
+          <td width="7%">
+            {{form.instance.type_of_jeopardy}} of {{form.instance.primary_asset_affected}}
+          </td>
+          <td width="17%">
+            {{form.instance.consequences}}
+          </td>
+          <td>
+            <!-- Impact = Level of Identification + Prejudicial Effects -->
+            {% with impact=form.instance.prejudicial_effects|add:form.instance.primary_asset_affected.level_of_identification %}
+              {% if impact < 5 and impact > 0 %}
+                <span class="label label-negligible">Negligible</span>
+              {% elif impact == 5 %}
+                <span class="label label-limited">Limited</span>
+              {% elif impact == 6 %}
+                <span class="label label-significant">Significant</span>
+              {% elif impact > 6 and impact <= 10 %}
+                <span class="label label-danger">Maximum</span>
+              {% else %}
+                <span class="label label-default">Not calculated</span>
+              {% endif %}
+            {% endwith %}
+          </td>
+          <td>
+
+            {% for pa_sa_rel in form.instance.primary_asset_affected.primary_in_psrel.all %}
+              {% for threat in pa_sa_rel.supporting.supporting_in_threatsarel.all|dictsortreversed:"likelihood" %}
+                {% if threat.threat.type_of_jeopardy == form.instance.type_of_jeopardy %}
+                  <p class="mb-5">
+                    <a class="btn btn-default btn-xs " tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="left" data-html="true" title="{{ threat.threat }}"
+                    data-content="
+                      <b>Affected Supporting Asset:</b> {{ threat.affected_supporting_asset }}
+                      <br/>
+                      <b>Likelihood:</b>
+                        {% with likelihood=threat.likelihood %}
+                          {% if likelihood < 5 %}
+                            Negligible
+                          {% elif likelihood == 5 %}
+                            Limited
+                          {% elif likelihood == 6 %}
+                            Significant
+                          {% elif likelihood > 6 and likelihood <= 10 %}
+                            Maximum
+                          {% else %}
+                            --
+                          {% endif %}
+                        {% endwith %}
+                      <br/>
+                      {% if threat.control %}
+                        <b>Control:</b> {{ threat.control }}
+                      {% endif %}">
+                      {{ threat.threat }}
+                      <span class="fa fa-caret-down"></span>
+                    </a>
+                  </p>
+                {% endif %}
+              {% endfor %}
+            {% endfor %}
+          </td>
+          <td width="9%">
+            <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="left" data-html="true" title="Risk Level"
+            data-content="
+              <p>
+                {% with max_likelihood=form.instance.max_likelihood %}
+                  {% with impact=form.instance.impact %}
+                    {% if max_likelihood <= 5 and impact <= 5 and impact > 0 %}
+                      <b>Negligible</b>... may be taken, especially since the treatment of other risks could also lead to its treatment.
+                    {% elif max_likelihood >= 6 and impact <= 5 %}
+                      <b>Limited</b>... must be reduced by implementing security measures that reduce its likelihood. Emphasis must be placed on recovery measures.
+                    {% elif max_likelihood <= 5 and impact >= 6 %}
+                      <b>Significant</b>... must be avoided or reduced by implementing security measures that reduce either its severity or its likelihood. Emphasis must be placed on preventive measures.
+                    {% elif max_likelihood >= 6 and impact >= 6 %}
+                      <b>Maximum</b>... must absolutely be avoided or reduced by implementing security measures that reduce both its severity and its likelihood. Ideally, care should even be taken to ensure that this risk is treated by independent measures of prevention (actions taken prior to a damaging event), protection (actions taken during a damaging event) and recovery (actions taken after a damaging event).
+                    {% else %}
+                      --
+                    {% endif %}
+                  {% endwith %}
+                {% endwith %}
+              </p>
+              ">
+              {% with max_likelihood=form.instance.max_likelihood %}
+                {% with impact=form.instance.impact %}
+                  {% if max_likelihood <= 5 and impact <= 5 and impact > 0 %}
+                    <span class="label label-negligible">Negligible</span>
+                  {% elif max_likelihood >= 6 and impact <= 5 %}
+                    <span class="label label-limited">Limited</span>
+                  {% elif max_likelihood <= 5 and impact >= 6 %}
+                    <span class="label label-significant">Significant</span>
+                  {% elif max_likelihood >= 6 and impact >= 6 %}
+                    <span class="label label-danger">Maximum</span>
+                  {% else %}
+                    <span class="label label-default">Not calculated</span>
+                  {% endif %}
+                {% endwith %}
+              {% endwith %}
+              <i class="fa fa-info-circle"></i>
+            </a>
+          </td>
+          <td class="form-group {% if form.risk_treatment.errors %}has-error{%endif%}">
+            {{ form.risk_treatment }}
+            {% if form.risk_treatment.errors %}
+              <span class="help-block">{{ form.risk_treatment.errors|striptags }}</span>
+            {% endif %}
+          </td>
+          <td class="form-group {% if form.residual_risk.errors %}has-error{%endif%}">
+            {{ form.residual_risk }}
+            {% if form.residual_risk.errors %}
+              <span class="help-block">{{ form.residual_risk.errors|striptags }}</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="8" class="text-muted bg-warning">
+            <i class="fa fa-chevron-left fa-fw"></i> Go back and add Primary Assets and Threats.
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+{% block paginator_buttons %}
+  <div class="paginator_panel">
+    <a href="{% url 'threat_controls' q.id %}" class="pull-left btn btn-default"><i class="fa fa-chevron-left fa-fw"></i> Previous</a>
+    <button type="submit" class="btn btn-primary btn-md pull-right loading_button" data-loading-text="<i class='fa fa-spinner fa-pulse fa-fw'></i> Saving...">Save and continue <i class="fa fa-chevron-right fa-fw"></i></button>
+  </div>
+{% endblock %}

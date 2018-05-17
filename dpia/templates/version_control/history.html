@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% load access_tags %}
+
+{% block title %}<title> History of {{ q }} | Data Protection Impact Assessment</title> {% endblock %}
+
+{% block panel_title %}History{% endblock %}
+
+{% block p_text %}
+  <p class="font-13 m-b-30">
+    <!-- Recover any object to any previous state.<br/> -->
+    Restore objects of the questionnaire to their previous states. Each version represents a snapshot of the questionnaire objects at the time of the action.<br/>
+    For example, if you want to restore primary assets that you or someone in your team changed/removed intentionally or unintentionally,
+    navigate to the action where primary assets are mentioned, and find the previous state you want to revert them to. The other questionnaire objects will remain in their current state. </br>
+    <!-- All objects in the actions after that will be deleted.<br/> -->
+    <span class="text-muted">Note that delete actions will not be shown.</span>
+  </p>
+{% endblock %}
+
+{% block content %}
+  <table class="table table-condensed table-hover">
+    <thead>
+      <tr>
+        <!-- <th>Version nr.</th> -->
+        <th>Action</th>
+        <th>By</th>
+        <th>When</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for version in versions %}
+        <tr {% if forloop.counter0 == 0 and versions.number == 1 %}style="background:#fff; color:black;"{% endif %}>
+          <!-- <td>
+            {{ version.revision.id }}
+          </td> -->
+          <td width="50%" {% if "Restored" in version.revision.comment %}style="color: gray;"{% endif %}>
+            {{ version.revision.comment }}
+          </td>
+          <td>
+            {{ version.revision.user }}
+          </td>
+          <td>
+            {{ version.revision.date_created|naturaltime }}
+          </td>
+          <td width="10%">
+            <a href="{% url 'revert_version' q.id version.revision.id %}"
+              class="loading_button btn btn-default btn-xs"
+              data-loading-text="<i class='fa fa-spinner fa-pulse fa-fw'></i> Restoring..."
+              title="Restore questionnaire to this state.">
+              Restore
+            </a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="4" class="text-muted bg-warning">
+            No history yet.
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+{% block paginator_buttons %}
+  {% if versions.has_other_pages %}
+    <div class="pagination center">
+      <span class="step-links">
+        <nav>
+          <ul class="pagination">
+            <!-- {% for i in versions.paginator.page_range %}
+              {% if i == 1 %}
+                <li><a href="?page={{ i }}"><i class="fa fa-step-backward"></i> First</a></li>
+              {% endif %}
+            {% endfor %} -->
+            {% if versions.has_previous %}
+              <li class="page-item">
+                <a href="?page={{ versions.previous_page_number }}" class="page-link"><i class="fa fa-chevron-left fa-fw"></i> Previous</a>
+              </li>
+            {% else %}
+              <li class="disabled"><span><i class="fa fa-chevron-left fa-fw"></i> Previous</span></li>
+            {% endif %}
+            <li class="page-item">
+              <a class="page-link">
+                <span class="current text-muted">
+                  {{ versions.number }}/{{ versions.paginator.num_pages }}
+                </span>
+              </a>
+            </li>
+            {% if versions.has_next %}
+              <li class="page-item">
+                <a href="?page={{ versions.next_page_number }}" class="page-link">Next <i class="fa fa-chevron-right fa-fw"></i></a>
+              </li>
+            {% else %}
+              <li class="disabled"><span>Next <i class="fa fa-chevron-right fa-fw"></i></span></li>
+            {% endif %}
+          </ul>
+        </nav>
+      </span>
+    </div>
+  {% endif %}
+{% endblock %}

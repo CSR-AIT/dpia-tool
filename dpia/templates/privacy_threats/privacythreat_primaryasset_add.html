@@ -1,0 +1,20 @@
+{% load crispy_forms_tags %}
+
+<form class="js-edit-form" method="post" action="{% url 'assign_primaryasset_to_privacythreat' q_id=q.id privacy_threat_rel_id=privacy_threat_rel.id  %}">{% csrf_token %}
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="modal-title">Assign Primary Assets to "{{ privacy_threat_rel.privacy_threat }}"</h4>
+  </div>
+  <div class="modal-body">
+    {{ add_pa_formset.management_form }}
+    {% for form in add_pa_formset.forms %}
+      {{ form|crispy }}
+    {% endfor %}
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </div>
+</form>

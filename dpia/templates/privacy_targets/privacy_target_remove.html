@@ -1,0 +1,17 @@
+<form class="js-delete-form" method="post" action="{% url 'privacy_target_delete' q.id privacy_target_rel.id %}">{% csrf_token %}
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="modal-title">Remove Privacy Target</h4>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      Are you sure you want to remove <strong>{{ privacy_target_rel.privacy_target }}</strong> from your list of privacy targets? Note that all of the privacy threats related to it will also be removed.
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <button type="submit" class="btn btn-danger">Remove</button>
+  </div>
+</form>

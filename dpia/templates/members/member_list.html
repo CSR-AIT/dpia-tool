@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load access_tags %}
+
+{% block title %} <title>Team Members | Data Protection Impact Assessment</title> {% endblock %}
+{% block panel_title %}Members{% endblock %}
+{% block p_text %}
+  <p class="font-13">
+    Three possible options for the management of the DPIA should be envisaged, each of them having its merits and drawbacks:
+    <ol class="m-b-10">
+      <li>A dedicated team within the organisation but not the one in charge of the application. The Data Protection Officer should be involved or contribute to this team from an evaluation or an operational point of view:</li>
+      <ol style="list-style-type:lower-alpha;">
+        <li>Persons with knowledge of the automation environment (hardware, software, networks and network components);</li>
+        <li>Persons in the user environment;</li>
+      </ol>
+      <li>A third party providing external expertise needed for the DPIA;</li>
+      <li>The persons in charge of the application/system which is the target of the DPIA. This might especially apply in the case of SMEs with limited resources.</li>
+    </ol>
+  </p>
+{% endblock %}
+{% block content %}
+  <ul class="nav navbar-right panel_toolbox m-b-10">
+    <!-- Add Member -->
+    {% is_authorized q.id request.user as authorized %}
+    {% if authorized %}
+      <a class="js-add btn btn-default" href="javascript:void(0)" data-url="{% url 'member_add' q_id=q.id %}"><i class="fa fa-user-plus"></i> Add Members</a>
+    {% endif %}
+  </ul>
+  <table id="q_table" class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Responsibility in this DPIA</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% include 'members/partial_member_list.html' %}
+    </tbody>
+  </table>
+{% endblock %}
+{% block paginator_buttons %}
+  <div class="paginator_panel">
+    <a href="{% url 'dashboard' %}" class="pull-left btn btn-default"> <span class="fa fa-chevron-left fa-fw"></span> Dashboard</a>
+    <a href="{% url 'sources' q.id  %}" class="pull-right btn btn-primary">Next <span class="fa fa-chevron-right fa-fw"></span></a>
+  </div>
+{% endblock %}

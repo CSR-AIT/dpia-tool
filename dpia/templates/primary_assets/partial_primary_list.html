@@ -1,0 +1,113 @@
+
+{% for form in primary_formset.forms %}
+  <tr>
+    <td>
+      {{ primary_formset.management_form }}
+      {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+      {% endfor %}
+    </td>
+    <td>
+      <abbr title="{% if form.instance.is_imported %}Imported{% else %}Manually added{% endif %}">{{ forloop.counter }}</abbr>
+    </td>
+    <td>
+      {{ form.instance.name }}
+    </td>
+    <td class="form-group {% if form.reading_frequency.errors %}has-error{%endif%}">
+      {{ form.reading_frequency }}
+      {% if form.reading_frequency.errors %}
+        <span class="help-block">{{ form.reading_frequency.errors|striptags }}</span>
+      {% endif %}
+    </td>
+    <td class="form-group {% if form.retention_time.errors %}has-error{%endif%}">
+      {{ form.retention_time }}
+      {% if form.retention_time.errors %}
+        <span class="help-block">{{ form.retention_time.errors|striptags }}</span>
+      {% endif %}
+    </td>
+    <td class="form-group {% if form.level_of_identification.errors %}has-error{%endif%}">
+      {{ form.level_of_identification }}
+      {% if form.level_of_identification.errors %}
+        <span class="help-block">{{ form.level_of_identification.errors|striptags }}</span>
+      {% endif %}
+    </td>
+    <td>
+      {% if form.instance.primary_in_psrel.all %}
+        {% for supporting_rel in form.instance.primary_in_psrel.all %}
+          <div class="dropdown mb-5">
+            <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+              {{ supporting_rel.supporting }}
+              <span class="text-muted small"> ({{ supporting_rel.supporting.supporting_type }})</span>
+              <span class="fa fa-caret-down fa-fw"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a title='Edit "{{ supporting_rel.supporting }}"' class="js-edit" href="javascript:void(0)" data-url="{% url 'supporting_edit' supporting_rel.id %}">Edit</a></li>
+              <li><a title='Remove "{{ supporting_rel.supporting }}"' class="js-delete" href="javascript:void(0)" data-url="{% url 'supporting_rel_delete' supporting_rel.id %}">Remove</a></li>
+            </ul>
+          </div>
+        {% endfor %}
+      {% endif %}
+    </td>
+    <td width="5%">
+      {% if form.instance.required %}
+        <div class="dropdown">
+          <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown">
+            <span class="fa fa-plus fa-fw"></span> SA
+          </button>
+          <ul class="dropdown-menu pull-right" role="menu">
+            <li><a class="js-edit" href="javascript:void(0)" data-url="{% url 'supporting_add' form.instance.id %}" title='Add new supporting asset to "{{ form.instance }}"'><i class="fa fa-plus fa-fw"></i> New</a></li>
+            <li><a class="js-edit" href="javascript:void(0)" data-url="{% url 'supporting_choose' form.instance.id %}" title='Select from your supporting assets'><i class="fa fa-plus-circle fa-fw"></i> Select</a></li>
+          </ul>
+        </div>
+      {% endif %}
+    </td>
+    <td>
+      <a class="js-edit btn btn-primary btn-xs" href="javascript:void(0)" data-url="{% url 'primary_edit' form.instance.id %}" title='Edit "{{ form.instance }}"'><i class="fa fa-pencil fa-fw"></i></a>
+      <a onclick='AjaxRemove("{% url 'primary_delete' form.instance.id %}")' class="btn btn-danger btn-xs" title='Remove "{{ form.instance }}"'><i class="fa fa-trash fa-fw"></i></a>
+    </td>
+  </tr>
+{% empty %}
+  <tr>
+    <td colspan="10" class="text-muted bg-warning">
+      0 Primary and Supporting Assets
+    </td>
+  </tr>
+{% endfor %}
+
+<!-- // remove primary assets -->
+<script>
+  function AjaxRemove(remove_url) {
+    $.jGrowl.defaults.closer = false;
+
+    $.ajax({
+      url: remove_url,
+      params: {
+                'csrf_token': '{{ csrf_token }}',
+                'csrf_name': 'csrfmiddlewaretoken',
+                'csrf_xname': 'X-CSRFToken',
+              },
+
+      success: function (data) {
+        if (data.form_is_valid) {
+          $("#q_table tbody").html(data.html_q_list);
+          $("#modal-q").modal("hide");
+
+          $.each(data.messages, function (i, m) {
+            $.jGrowl(m.message, {
+              position: 'top-right',
+              sticky: false,
+              openDuration: 'fast',
+              theme: 'success',
+              // header: '<i class=fa fa-fw>&#xf058;</i> Success',
+            });
+          });
+          $('#hidden_link').css('display', 'inline');
+        }
+        else {
+          $("#modal-q .modal-content").html(data.html_form);
+        }
+      }
+    });
+    return false;
+  };
+</script>

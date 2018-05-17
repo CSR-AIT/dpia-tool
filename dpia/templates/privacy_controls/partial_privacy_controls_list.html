@@ -1,0 +1,50 @@
+{% for privacy_q_rel in privacy_q_rels %}
+  <tr>
+    <td>
+      {{ forloop.counter }}
+    </td>
+    <td width="30%">
+      {{ privacy_q_rel.privacy_target }}
+    </td>
+    <td>
+      {% if privacy_q_rel.privacy_threats.all %}
+        {% for privacy_threat_rel in privacy_q_rel.pqrel_in_pthreatrel.all %}
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              {{ privacy_threat_rel.privacy_threat}}
+              <ul class="nav navbar-right panel_toolbox">
+                <a class="js-edit btn btn-default btn-xs" href="javascript:void(0)" data-url="{% url 'add_generic_privacycontrol' q_id=q.id privacy_threat_rel_id=privacy_threat_rel.id %}" title='Add Controls to "{{privacy_threat_rel.privacy_threat}}"'><i class="fa fa-plus fa-fw"></i> Add Controls</a>
+              </ul>
+            </div>
+            <!-- Controls of this Threat -->
+            {% if privacy_threat_rel.controls.all %}
+              <ul class="list-group">
+                {% for threat_control in privacy_threat_rel.pthreatrel_in_pthreatcontrol.all %}
+                  <!-- Delete PrivacyThreat -->
+                  <li class="list-group-item" title="{{ threat_control.privacy_control }}">
+                    {{ threat_control.privacy_control|truncatewords:15 }}
+                    <div class="dropdown pull-right">
+                      <a class="js-delete btn btn-danger btn-xs" href="javascript:void(0)" data-url="{% url 'delete_selected_privacy_control' q_id=q.id threat_control_id=threat_control.id %}" title='Remove "{{threat_control.privacy_control }}"'>
+                        <i class="fa fa-trash fa-fw"></i>
+                      </a>
+                    </div>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+        {% endfor %}
+      {% else %}
+        <span class="text-muted">
+          <i class="fa fa-chevron-left fa-fw"></i> Go back and add Privacy Threats.
+        </span>
+      {% endif %}
+    </td>
+  </tr>
+{% empty %}
+  <tr>
+    <td colspan="3" class="text-muted bg-warning">
+      <i class="fa fa-chevron-left fa-fw"></i> Go back and add Privacy Threats.
+    </td>
+  </tr>
+{% endfor %}

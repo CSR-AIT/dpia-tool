@@ -1,0 +1,24 @@
+{% load widget_tweaks %}
+
+<div class="modal-dialog modal-md" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <h4 class="modal-title">Add new control to "{{privacy_threat_rel.privacy_threat}}"</h4>
+    </div>
+    <div class="modal-body">
+    <form class="add-form" method="post" action="{% url 'assign_controls_to_privacythreat' q_id=q.id privacy_threat_rel_id=privacy_threat_rel.id %}">{% csrf_token %}
+      <div class="form-group">
+        <label>{{ control_form.name.label }}</label>
+        {{ control_form.name|add_class:"form-control"|attr:"required"}}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" name="_add" class="btn btn-primary">Submit</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>

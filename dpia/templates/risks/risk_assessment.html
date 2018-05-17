@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}<title> Impact Assessment | Data Protection Impact Assessment </title> {% endblock %}
+
+{% block panel_title %}Impact Assessment{% endblock %}
+
+{% block p_text %}
+{% endblock %}
+
+{% block content %}
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Affected primary asset</th>
+        <th>Type of Jeopardy</th>
+        <th>Consequences</th>
+        <th>Risk Owner</th>
+        <th>Threats</th>
+        <th>
+          <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="left" data-html="true" title="Level of Identification" data-content="
+          <b>Negligible</b>: Identifying an individual using their personal data appears to be virtually impossible.
+          <br/>
+          <b>Limited</b>: Identifying an individual using their personal data appears to be difficult but is possible in certain cases.
+          <br/>
+          <b>Significant</b>: Identifying an individual using their personal data appears to be relatively easy.
+          <br/>
+          <b>Maximum</b>: Identifying an individual using their personal data appears to be extremely easy.">
+          Level of Identification
+          <i class="fa fa-info-circle"></i></a>
+        </th>
+        <th>
+          <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="left" data-html="true" title="Prejudicial Effects" data-content="
+          <b>Negligible</b>: Data subjects either will not be affected or may encounter a few inconveniences, which they will overcome without any problem.
+          <br/>
+          <b>Limited</b>: Data subjects may encounter significant inconveniences, which they will be able to overcome despite a few difficulties.
+          <br/>
+          <b>Significant</b>: Data subjects may encounter significant consequences, which they should be able to overcome albeit with serious difficulties.
+          <br/>
+          <b>Maximum</b>: Data subjects may encounter significant, or even irreversible, consequences, which they may not overcome.">
+          Prejudicial Effects
+          <i class="fa fa-info-circle"></i></a>
+        </th>
+        <th>
+          <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="left" data-html="true" title="Impact" data-content="
+          <b>Impact</b> = Level of identification of primary asset + Prejudicial effect of the risk">
+          Impact
+          <i class="fa fa-info-circle"></i></a>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {{ risk_formset.management_form }}
+      {% for form in risk_formset.forms %}
+        {% for hidden in form.hidden_fields %}
+          {{ hidden }}
+        {% endfor %}
+        <tr>
+          <td>
+            {{ forloop.counter }}
+          </td>
+          <td width="5%">
+            {{ form.instance.primary_asset_affected }}
+          </td>
+          <td>
+            {{ form.instance.type_of_jeopardy }}
+          </td>
+          <td width="25%" class="form-group {% if form.consequences.errors %}has-error{%endif%}">
+            {{ form.consequences }}
+            {% if form.consequences.errors %}
+              <span class="help-block">{{ form.consequences.errors|striptags }}</span>
+            {% endif %}
+          </td>
+          <td width="10%" class="form-group {% if form.risk_owner.errors %}has-error{%endif%}">
+            {{ form.risk_owner }}
+            {% if form.risk_owner.errors %}
+              <span class="help-block">{{ form.risk_owner.errors|striptags }}</span>
+            {% endif %}
+          </td>
+          <td width="7%">
+            <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="bottom" data-html="true" title="<b>List of Threats</b>"
+            data-content="
+              {% for pa_sa_rel in form.instance.primary_asset_affected.primary_in_psrel.all %}
+                  {% for threat_rel in pa_sa_rel.supporting.supporting_in_threatsarel.all|dictsortreversed:"likelihood" %}
+                    {% if threat_rel.threat.type_of_jeopardy == form.instance.type_of_jeopardy %}
+                      - {{ threat_rel.threat }} ({{ threat_rel.affected_supporting_asset }})<br/>
+                    {% endif %}
+                  {% endfor %}
+              {% endfor %}">
+              Threats
+            </a>
+          </td>
+          <td>
+            {{ form.instance.primary_asset_affected.get_level_of_identification_display }}
+          </td>
+          <td class="form-group {% if form.prejudicial_effects.errors %}has-error{%endif%}">
+            {{ form.prejudicial_effects }}
+            {% if form.prejudicial_effects.errors %}
+              <span class="help-block">{{ form.prejudicial_effects.errors|striptags }}</span>
+            {% endif %}
+          </td>
+          <td>
+            {% with impact=form.instance.prejudicial_effects|add:form.instance.primary_asset_affected.level_of_identification %}
+              {% if impact < 5 and impact > 0 %}
+                <span class="label label-negligible">Negligible</span>
+              {% elif impact == 5 %}
+                <span class="label label-limited">Limited</span>
+              {% elif impact == 6 %}
+                <span class="label label-significant">Significant</span>
+              {% elif impact > 6 and impact <= 10 %}
+                <span class="label label-danger">Maximum</span>
+              {% else %}
+                <span class="label label-default">Not calculated</span>
+              {% endif %}
+            {% endwith %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="9" class="text-muted bg-warning">
+            <i class="fa fa-chevron-left fa-fw"></i> Go back and add Primary Assets and Threats.
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+{% block paginator_buttons %}
+  <div class="paginator_panel">
+    <a href="{% url 'threat_assessment' q.id %}" class="pull-left btn btn-default"><i class="fa fa-chevron-left fa-fw"></i> Previous</a>
+    <button type="submit" class="btn btn-primary btn-md pull-right loading_button" data-loading-text="<i class='fa fa-spinner fa-pulse fa-fw'></i> Saving...">Save and continue <i class="fa fa-chevron-right fa-fw"></i></button>
+  </div>
+{% endblock %}

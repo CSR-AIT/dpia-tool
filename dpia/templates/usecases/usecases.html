@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}<title> Use Cases | Data Protection Impact Assessment </title> {% endblock %}
+
+{% block panel_title %}Use Cases{% endblock %}
+
+{% block p_text %}
+  <p class="font-13 m-b-10">
+    The aim of the template in section 3.3 is to gather relevant and overall information regarding the processed data, the use case, the organisation, actors involved, the system owner, and the project.
+  </p>
+{% endblock %}
+
+{% block content %}
+  <ul class="nav navbar-right panel_toolbox m-b-30">
+    <a class="js-add btn btn-default" href="javascript:void(0)" data-url="{% url 'add_usecase' id=q.id %}"><i class="fa fa-plus fa-fw"></i> New Use Case</a>
+  </ul>
+  <table id="q_table" class="table table-condensed">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Domain</th>
+        <th>Description</th>
+        <th>Business goal</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% include 'usecases/partial_usecase_list.html' %}
+    </tbody>
+  </table>
+{% endblock %}
+
+{% block paginator_buttons %}
+  <div class="paginator_panel">
+    <a href="{% url 'primary_list' id=q.id %}" class="pull-left btn btn-default"><span class="fa fa-chevron-left fa-fw"></span> Previous</a>
+    <a href="{% url 'primary_list' id=q.id %}" class="pull-right btn btn-primary">Next <span class="fa fa-chevron-right fa-fw"></span></a>
+  </div>
+{% endblock %}

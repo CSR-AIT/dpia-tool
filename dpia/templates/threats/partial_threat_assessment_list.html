@@ -1,0 +1,77 @@
+{% for threat in selected_threats %}
+  <tr>
+    <td>
+      {{ forloop.counter }}
+    </td>
+    <td>
+      {{ threat.affected_supporting_asset }}
+    </td>
+    <td>
+      {{ threat.threat }}
+    </td>
+    <td>
+      <form action="{% url 'threat_assessment' q_id=q.id %}" method="post">{% csrf_token %}
+        <div class="form-group col-xs-12">
+          {% for field in threat_form.visible_fields %}
+            <select name="level_of_vulnerability" class="form-control" required>
+              {% for value, text in threat_form.fields.level_of_vulnerability.choices %}
+                <option value="{{ value }}" {% if threat.level_of_vulnerability == value %}selected{% endif %}>{{ text }}</option>
+              {% endfor %}
+            </select>
+            {% for error in field.errors %}
+              <span class="help-block">{{ error }}</span>
+            {% endfor %}
+          {% endfor %}
+        </div>
+        <input type="hidden" name="threat_id" value="{{ threat.id }}" />
+        <button type="submit" onclick="saveForm()" class="btn btn-primary btn-xs">Send</button>
+      </form>
+    </td>
+  </tr>
+{% endfor %}
+
+
+<script>
+  var saveForm = function () {
+    var form = $(this);
+
+    $.jGrowl.defaults.closer = false;
+
+    $.ajax({
+      url: form.attr("action"),
+      data: form.serialize(),
+      type: form.attr("method"),
+      dataType: 'json',
+      params: {
+                'csrf_token': '{{ csrf_token }}',
+                'csrf_name': 'csrfmiddlewaretoken',
+                'csrf_xname': 'X-CSRFToken',
+              },
+      success: function (data) {
+        if (data.form_is_valid) {
+          $("#q_table tbody").html(data.html_q_list);
+          $.each(data.messages, function (i, m) {
+            $.jGrowl(m.message, {
+              position: 'bottom-left',
+              sticky: false,
+              theme: 'success',
+              header: '<i class=fa fa-fw>&#xf058;</i> Succe#ss',
+              life: 5000,
+              openDuration: 'fast',
+              // closeDuration: 'fast',
+            });
+          });
+          $('#q_status').html("Completed: " + data.q_total + "%");
+          if (data.q_total == 100) {
+            $('#q_status').removeClass('btn-dark').addClass('btn-success');
+          }
+          else {
+            $('#q_status').removeClass('btn-success').addClass('btn-dark');
+          }
+        }
+
+      }
+    });
+    return false;
+  };
+</script>
