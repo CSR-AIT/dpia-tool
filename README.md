@@ -29,7 +29,7 @@ Install python 2.7.
 
 Download or clone the repository to your local machine:
 
-`git clone https://github.com/ait-csr/dpia-tool.git`
+`git clone https://github.com/CSR-AIT/dpia-tool.git`
 
 Open the main directory and install the requirements:
 
