@@ -14,7 +14,7 @@ Pillow==5.1.0
 PyPDF2==1.26.0
 python-docx==0.8.6
 pytz==2018.4
-reportlab==3.4.0
+reportlab==3.5.55
 requests==2.18.4
 six==1.11.0
 sqlparse==0.2.4
